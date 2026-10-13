@@ -1,4 +1,4 @@
-<header class="titlebar" role="banner" aria-label="Barre de titre Capricio">
+<header class="titlebar" role="banner" [attr.aria-label]="i18n.t('titlebar.banner')">
   <!-- Zone déplaçable (drag natif Tauri). Les boutons sont hors de cette zone. -->
   <div
     class="titlebar-drag"
@@ -20,27 +20,36 @@
     </button>
     <button
       type="button"
+      class="lang-btn"
+      (click)="i18n.cycle()"
+      [attr.aria-label]="i18n.t('titlebar.lang', { lang: i18n.lang() })"
+      [title]="i18n.t('titlebar.lang', { lang: i18n.lang() })"
+    >
+      {{ i18n.lang().toUpperCase() }}
+    </button>
+    <button
+      type="button"
       class="icon-btn help"
       (click)="openAbout()"
-      aria-label="À propos de Capricio"
-      title="À propos de Capricio"
+      [attr.aria-label]="i18n.t('titlebar.about')"
+      [title]="i18n.t('titlebar.about')"
     >
       ?
     </button>
 
     @if (win.isTauri) {
       <div class="window-controls" role="group" aria-label="Contrôles de la fenêtre">
-        <button type="button" class="icon-btn" (click)="win.minimize()" aria-label="Réduire la fenêtre" title="Réduire">─</button>
+        <button type="button" class="icon-btn" (click)="win.minimize()" [attr.aria-label]="i18n.t('titlebar.minimize')" [title]="i18n.t('titlebar.minimizeTitle')">─</button>
         <button
           type="button"
           class="icon-btn"
           (click)="win.toggleMaximize()"
-          [attr.aria-label]="win.isMaximized() ? 'Restaurer la fenêtre' : 'Agrandir la fenêtre'"
-          [title]="win.isMaximized() ? 'Restaurer' : 'Agrandir'"
+          [attr.aria-label]="win.isMaximized() ? i18n.t('titlebar.restore') : i18n.t('titlebar.maximize')"
+          [title]="win.isMaximized() ? i18n.t('titlebar.restoreTitle') : i18n.t('titlebar.maximizeTitle')"
         >
           {{ win.isMaximized() ? "❐" : "▢" }}
         </button>
-        <button type="button" class="icon-btn close" (click)="win.closeWindow()" aria-label="Fermer l'application" title="Fermer">✕</button>
+        <button type="button" class="icon-btn close" (click)="win.closeWindow()" [attr.aria-label]="i18n.t('titlebar.close')" [title]="i18n.t('titlebar.closeTitle')">✕</button>
       </div>
     }
   </div>
@@ -50,9 +59,9 @@
   <div class="about-backdrop" (click)="closeAbout()">
     <section class="about" role="dialog" aria-modal="true" aria-labelledby="about-title" (click)="$event.stopPropagation()">
       <h2 id="about-title">Capricio {{ appVersion }}</h2>
-      <p>Application d'aide à la décision — 100&nbsp;% hors-ligne, données locales.</p>
-      <p class="muted">Décision rapide ou réfléchie, sans compte ni réseau (CDC §1).</p>
-      <button type="button" class="btn-primary" (click)="closeAbout()" aria-label="Fermer la fenêtre À propos (Échap)">Fermer</button>
+      <p>{{ i18n.t("titlebar.aboutP1") }}</p>
+      <p class="muted">{{ i18n.t("titlebar.aboutP2") }}</p>
+      <button type="button" class="btn-primary" (click)="closeAbout()" [attr.aria-label]="i18n.t('common.close')">{{ i18n.t("common.close") }}</button>
     </section>
   </div>
 }

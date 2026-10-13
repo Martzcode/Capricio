@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { DrawService } from "../../services/draw.service";
 import { HistoryService } from "../../services/history.service";
+import { I18nService } from "../../services/i18n.service";
 import { ToastService } from "../../services/toast.service";
 
 /**
@@ -18,6 +19,7 @@ export class DrawComponent {
   private readonly draws = inject(DrawService);
   private readonly history = inject(HistoryService);
   private readonly toast = inject(ToastService);
+  readonly i18n = inject(I18nService);
 
   readonly rawText = signal("");
   readonly count = signal(1);
@@ -60,14 +62,15 @@ export class DrawComponent {
         // La suite se joue sur le reste : la zone reflète la liste restante.
         this.rawText.set(res.remaining.join("\n"));
       }
+      const n = options.length;
       await this.history.add({
-        tool: "Tirage au sort",
-        title: `${options.length} option${options.length > 1 ? "s" : ""}`,
+        tool: this.i18n.t("tools.draw"),
+        title: this.i18n.t(n === 1 ? "draw.historyOne" : "draw.historyOther", { count: n }),
         resume: res.winners.join(", "),
         details: { options, count: this.count(), winners: res.winners },
       });
     } catch (e) {
-      this.toast.show(typeof e === "string" ? e : "Tirage impossible.", "error");
+      this.toast.show(typeof e === "string" ? e : this.i18n.t("draw.error"), "error");
     }
   }
 }

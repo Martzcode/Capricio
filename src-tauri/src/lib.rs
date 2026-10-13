@@ -11,43 +11,45 @@ use tools::pros_cons::{self, Arg, Evaluation};
 use tools::random_number::{self, NumberResult};
 
 /// Pile ou face (§7.1). `labels` optionnels, défaut Pile/Face.
-/// Contrat : in `{labels?: [string,string]}` → out `{winner, index}`.
+/// Contrat : in `{labels?, lang?}` → out `{winner, index}`.
 #[tauri::command]
-fn coin_flip(labels: Option<[String; 2]>) -> Result<CoinResult, String> {
+fn coin_flip(labels: Option<[String; 2]>, lang: Option<String>) -> Result<CoinResult, String> {
     let labels = labels.unwrap_or([
         coin_flip::DEFAULT_LABELS[0].into(),
         coin_flip::DEFAULT_LABELS[1].into(),
     ]);
-    coin_flip::flip(labels)
+    coin_flip::flip(labels, lang.as_deref())
 }
 
-/// Nombre aléatoire (§7.2). Contrat : in `{min, max}` → out `{value}`.
+/// Nombre aléatoire (§7.2). Contrat : in `{min, max, lang?}` → out `{value}`.
 #[tauri::command]
-fn random_number(min: i64, max: i64) -> Result<NumberResult, String> {
-    random_number::draw_number(min, max)
+fn random_number(min: i64, max: i64, lang: Option<String>) -> Result<NumberResult, String> {
+    random_number::draw_number(min, max, lang.as_deref())
 }
 
-/// Tirage au sort (§7.3). Contrat : in JS `{options, count, withoutReplacement}`
+/// Tirage au sort (§7.3). Contrat : in JS `{options, count, withoutReplacement, lang?}`
 /// (camelCase converti par Tauri) → out `{winners, remaining}`.
 #[tauri::command]
 fn draw_lots(
     options: Vec<String>,
     count: usize,
     without_replacement: bool,
+    lang: Option<String>,
 ) -> Result<DrawResult, String> {
-    draw::draw(&options, count, without_replacement)
+    draw::draw(&options, count, without_replacement, lang.as_deref())
 }
 
 /// Pour/contre pondéré (§8.1 MVP : poids 1/2/3).
-/// Contrat : in `{title, pros: [{label, weight}], cons: [...]}` → out
+/// Contrat : in `{title, pros: [{label, weight}], cons: [...], lang?}` → out
 /// `{scorePour, scoreContre, ecartPct, verdict}` (clés converties en camelCase).
 #[tauri::command]
 fn pros_cons_evaluate(
     title: String,
     pros: Vec<Arg>,
     cons: Vec<Arg>,
+    lang: Option<String>,
 ) -> Result<Evaluation, String> {
-    pros_cons::evaluate(&title, &pros, &cons)
+    pros_cons::evaluate(&title, &pros, &cons, lang.as_deref())
 }
 
 /// Arme le verrou anti-zoom natif (Linux/WebKitGTK, no-op ailleurs).

@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit, inject, signal } from "@angular/core";
+import { I18nService } from "../../services/i18n.service";
 import { ThemeService, ThemeChoice } from "../../services/theme.service";
 import { WindowControlsService } from "../../services/window-controls.service";
 
@@ -6,7 +7,8 @@ const THEME_ORDER: ThemeChoice[] = ["light", "dark", "auto"];
 
 /**
  * Barre de titre personnalisée (remplace la barre native : decorations:false §5.4).
- * Boutons : accueil (§14), thème clair/sombre/auto (F7a), à propos, réduire/agrandir/fermer.
+ * Boutons : thème clair/sombre/auto (F7a), langue FR/EN/ES/DE (F7 §13.4),
+ * à propos, réduire/agrandir/fermer.
  */
 @Component({
   selector: "app-titlebar",
@@ -16,6 +18,7 @@ const THEME_ORDER: ThemeChoice[] = ["light", "dark", "auto"];
 export class TitlebarComponent implements OnInit {
   readonly theme = inject(ThemeService);
   readonly win = inject(WindowControlsService);
+  readonly i18n = inject(I18nService);
   readonly showAbout = signal(false);
   readonly appVersion = "0.1.0";
 
@@ -49,11 +52,11 @@ export class TitlebarComponent implements OnInit {
   themeLabel(): string {
     switch (this.theme.choice()) {
       case "light":
-        return "Thème clair (cliquer : sombre)";
+        return this.i18n.t("titlebar.themeLight");
       case "dark":
-        return "Thème sombre (cliquer : automatique)";
+        return this.i18n.t("titlebar.themeDark");
       default:
-        return "Thème automatique système (cliquer : clair)";
+        return this.i18n.t("titlebar.themeAuto");
     }
   }
 

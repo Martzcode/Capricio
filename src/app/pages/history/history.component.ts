@@ -2,6 +2,7 @@ import { Component, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { HistoryService } from "../../services/history.service";
+import { I18nService } from "../../services/i18n.service";
 import { ToastService } from "../../services/toast.service";
 
 /**
@@ -17,6 +18,7 @@ import { ToastService } from "../../services/toast.service";
 export class HistoryComponent {
   readonly history = inject(HistoryService);
   private readonly toast = inject(ToastService);
+  readonly i18n = inject(I18nService);
   readonly pendingDelete = signal<number | null>(null);
   readonly showClearConfirm = signal(false);
 
@@ -31,7 +33,7 @@ export class HistoryComponent {
     try {
       await this.history.remove(id);
     } catch {
-      this.toast.show("Suppression impossible.", "error");
+      this.toast.show(this.i18n.t("history.deleteError"), "error");
     }
   }
 
@@ -39,7 +41,7 @@ export class HistoryComponent {
     try {
       await this.history.clear();
     } catch {
-      this.toast.show("Effacement impossible.", "error");
+      this.toast.show(this.i18n.t("history.clearError"), "error");
     }
     this.showClearConfirm.set(false);
   }

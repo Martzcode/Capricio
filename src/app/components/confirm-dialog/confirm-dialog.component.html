@@ -9,7 +9,7 @@
     <h2>{{ title() }}</h2>
     <p>{{ message() }}</p>
     <div class="confirm-actions">
-      <button type="button" class="btn-ghost" (click)="cancelled.emit()" aria-label="Annuler (Échap)">
+      <button type="button" class="btn-ghost" (click)="cancelled.emit()" [attr.aria-label]="i18n.t('common.cancel')">
         {{ cancelLabel() }}
       </button>
       <button type="button" class="btn-primary" (click)="confirmed.emit()" autofocus>

@@ -1,24 +1,24 @@
 <div class="number-page">
-  <a class="back" routerLink="/">← Accueil</a>
-  <h1>Nombre aléatoire</h1>
+  <a class="back" routerLink="/">{{ i18n.t("common.back") }}</a>
+  <h1>{{ i18n.t("number.title") }}</h1>
 
   <form class="bounds" (submit)="$event.preventDefault(); draw()">
     <label>
-      Minimum
+      {{ i18n.t("number.min") }}
       <input
         type="number"
         [value]="min()"
         (input)="setBound('min', $any($event.target).value)"
-        aria-label="Borne minimale"
+        [attr.aria-label]="i18n.t('number.min')"
       />
     </label>
     <label>
-      Maximum
+      {{ i18n.t("number.max") }}
       <input
         type="number"
         [value]="max()"
         (input)="setBound('max', $any($event.target).value)"
-        aria-label="Borne maximale"
+        [attr.aria-label]="i18n.t('number.max')"
       />
     </label>
     <label class="check">
@@ -26,29 +26,29 @@
         type="checkbox"
         [checked]="withoutRepetition()"
         (change)="toggleRepetition()"
-        aria-label="Tirer sans répétition pendant la session"
+        [attr.aria-label]="i18n.t('number.noRepeatAria')"
       />
-      Sans répétition
+      {{ i18n.t("number.noRepeat") }}
     </label>
-    <p class="whole">Nombres entiers uniquement</p>
+    <p class="whole">{{ i18n.t("number.whole") }}</p>
   </form>
 
   <div class="stage" aria-live="polite" aria-atomic="true">
     @if (value() !== null) {
       <p class="big">{{ value() }}</p>
     } @else {
-      <p class="hint">Cliquez sur Tirer</p>
+      <p class="hint">{{ i18n.t("number.hint") }}</p>
     }
   </div>
 
   <div class="actions">
     <button type="button" class="btn-primary" (click)="draw()">
-      {{ value() === null ? "Tirer" : "Tirer un autre nombre" }}
+      {{ value() === null ? i18n.t("number.draw") : i18n.t("number.drawMore") }}
     </button>
   </div>
 
   @if (tail().length > 0) {
-    <div class="tail" aria-label="5 derniers tirages">
+    <div class="tail" [attr.aria-label]="i18n.t('number.tail')">
       @for (n of tail(); track $index) {
         <span class="chip">{{ n }}</span>
       }

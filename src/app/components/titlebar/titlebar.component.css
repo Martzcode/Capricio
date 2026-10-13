@@ -71,6 +71,30 @@
   color: #fff;
 }
 
+/* Sélecteur de langue : code compact (FR/EN/ES/DE), cycle au clic. */
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  min-width: 38px;
+  padding: 0 8px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.lang-btn:hover {
+  background: var(--hover);
+  color: var(--titlebar-fg);
+}
+
 .window-controls {
   display: flex;
   align-items: center;

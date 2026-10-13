@@ -1,24 +1,24 @@
 <div class="home">
   @if (showTutorial()) {
     <section class="tutorial" aria-label="Premiers pas">
-      <p><strong>Bienvenue sur Capricio.</strong> Tranchez vite (tirage) ou posément (pour/contre) — 100&nbsp;% hors-ligne.</p>
-      <button type="button" (click)="dismissTutorial()">Compris, ne plus afficher</button>
+      <p><strong>{{ i18n.t("home.tutoLead") }}</strong> {{ i18n.t("home.tutoRest") }}</p>
+      <button type="button" (click)="dismissTutorial()">{{ i18n.t("home.tutoOk") }}</button>
     </section>
   }
 
   <section aria-labelledby="fast-title">
-    <h2 id="fast-title" class="group-title"><span class="group-dot fast" aria-hidden="true"></span>Décision rapide</h2>
+    <h2 id="fast-title" class="group-title"><span class="group-dot fast" aria-hidden="true"></span>{{ i18n.t("home.fast") }}</h2>
     <div class="tiles">
-      @for (t of fastTools; track t.id) {
+      @for (t of fastTools(); track t.id) {
         <app-tool-tile [tool]="t" />
       }
     </div>
   </section>
 
   <section aria-labelledby="slow-title">
-    <h2 id="slow-title" class="group-title"><span class="group-dot slow" aria-hidden="true"></span>Décision réfléchie</h2>
+    <h2 id="slow-title" class="group-title"><span class="group-dot slow" aria-hidden="true"></span>{{ i18n.t("home.slow") }}</h2>
     <div class="tiles">
-      @for (t of slowTools; track t.id) {
+      @for (t of slowTools(); track t.id) {
         <app-tool-tile [tool]="t" />
       }
     </div>
@@ -26,16 +26,16 @@
 
   <section aria-labelledby="recent-title">
     <div class="recent-head">
-      <h2 id="recent-title" class="group-title">Récentes</h2>
+      <h2 id="recent-title" class="group-title">{{ i18n.t("home.recent") }}</h2>
       <div class="recent-actions">
-        <a routerLink="/history">Tout l'historique →</a>
+        <a routerLink="/history">{{ i18n.t("home.historyLink") }}</a>
         <button
           type="button"
           class="trash-btn"
           (click)="clearHistory()"
           [disabled]="history.entries().length === 0"
-          aria-label="Supprimer tout l'historique"
-          title="Supprimer tout l'historique"
+          [attr.aria-label]="i18n.t('home.trash')"
+          [title]="i18n.t('home.trash')"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
             <path d="M2 4h12" />
@@ -52,9 +52,10 @@
 
 @if (showClearConfirm()) {
   <app-confirm-dialog
-    title="Supprimer tout l'historique ?"
-    message="Toutes les décisions enregistrées seront définitivement effacées."
-    confirmLabel="Tout supprimer"
+    [title]="i18n.t('home.clearTitle')"
+    [message]="i18n.t('home.clearMsg')"
+    [confirmLabel]="i18n.t('home.clearOk')"
+    [cancelLabel]="i18n.t('common.cancel')"
     (confirmed)="confirmClear()"
     (cancelled)="showClearConfirm.set(false)"
   />

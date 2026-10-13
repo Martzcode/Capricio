@@ -1,4 +1,5 @@
-import { Component, HostListener, input, output } from "@angular/core";
+import { Component, HostListener, inject, input, output } from "@angular/core";
+import { I18nService } from "../../services/i18n.service";
 
 /** Dialogue de confirmation applicatif (remplace confirm() natif, dont le titre technique fuit dans la WebView). */
 @Component({
@@ -7,6 +8,7 @@ import { Component, HostListener, input, output } from "@angular/core";
   styleUrl: "./confirm-dialog.component.css",
 })
 export class ConfirmDialogComponent {
+  readonly i18n = inject(I18nService);
   readonly title = input.required<string>();
   readonly message = input.required<string>();
   readonly confirmLabel = input("Supprimer");

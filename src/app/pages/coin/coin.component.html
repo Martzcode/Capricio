@@ -1,45 +1,45 @@
 <div class="coin-page">
-  <a class="back" routerLink="/">← Accueil</a>
-  <h1>Pile ou face</h1>
+  <a class="back" routerLink="/">{{ i18n.t("common.back") }}</a>
+  <h1>{{ i18n.t("tools.coin") }}</h1>
 
   <form class="labels" (submit)="$event.preventDefault(); flip()">
     <label>
-      Côté 1
+      {{ i18n.t("coin.side1") }}
       <input
         type="text"
         maxlength="20"
         [value]="labelA()"
         (input)="setLabel(0, $any($event.target).value)"
-        aria-label="Libellé du côté 1"
+        [attr.aria-label]="i18n.t('coin.side1')"
       />
     </label>
     <label>
-      Côté 2
+      {{ i18n.t("coin.side2") }}
       <input
         type="text"
         maxlength="20"
         [value]="labelB()"
         (input)="setLabel(1, $any($event.target).value)"
-        aria-label="Libellé du côté 2"
+        [attr.aria-label]="i18n.t('coin.side2')"
       />
     </label>
   </form>
 
   <div class="stage" aria-live="polite" aria-atomic="true">
     @if (flipping()) {
-      <div class="piece spinning" aria-label="Pièce en rotation">?</div>
+      <div class="piece spinning" [attr.aria-label]="i18n.t('coin.spinning')">?</div>
     } @else if (result()) {
       <div class="piece landed">{{ result()?.winner?.charAt(0) }}</div>
       <p class="winner">{{ result()?.winner }}</p>
     } @else {
       <div class="piece idle" aria-hidden="true">◐</div>
-      <p class="hint">Cliquez sur Lancer</p>
+      <p class="hint">{{ i18n.t("coin.hint") }}</p>
     }
   </div>
 
   <div class="actions">
     <button type="button" class="btn-primary" (click)="flip()" [disabled]="flipping()">
-      {{ result() ? "Rejouer" : "Lancer" }}
+      {{ result() ? i18n.t("coin.replay") : i18n.t("coin.launch") }}
     </button>
   </div>
 </div>

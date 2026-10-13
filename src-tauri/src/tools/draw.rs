@@ -16,6 +16,7 @@ pub fn draw(
     options: &[String],
     count: usize,
     without_replacement: bool,
+    lang: Option<&str>,
 ) -> Result<DrawResult, String> {
     let clean: Vec<String> = options
         .iter()
@@ -24,26 +25,50 @@ pub fn draw(
         .take(MAX_OPTIONS + 1)
         .collect();
     if clean.is_empty() {
-        return Err("Ajoutez au moins 2 options (une par ligne) pour tirer.".into());
+        return Err(super::tr(
+            lang,
+            "Ajoutez au moins 2 options (une par ligne) pour tirer.",
+            "Add at least 2 options (one per line) to draw.",
+            "Añada al menos 2 opciones (una por línea) para sortear.",
+            "Fügen Sie mindestens 2 Optionen (eine pro Zeile) hinzu, um zu ziehen.",
+        ));
     }
     if clean.len() == 1 {
-        return Err("Une seule option : ajoutez-en au moins une 2ᵉ pour tirer.".into());
+        return Err(super::tr(
+            lang,
+            "Une seule option : ajoutez-en au moins une 2ᵉ pour tirer.",
+            "Only one option: add at least a 2nd one to draw.",
+            "Solo una opción: añada al menos una 2.ª para sortear.",
+            "Nur eine Option: Fügen Sie mindestens eine 2. hinzu, um zu ziehen.",
+        ));
     }
     if count == 0 {
-        return Err("Le nombre à tirer doit être d'au moins 1.".into());
+        return Err(super::tr(
+            lang,
+            "Le nombre à tirer doit être d'au moins 1.",
+            "Must draw at least 1.",
+            "Debe sortear al menos 1.",
+            "Es muss mindestens 1 gezogen werden.",
+        ));
     }
     // Plafond : au plus N-1 (on laisse toujours au moins 1 option).
     if count > clean.len() - 1 {
-        return Err(format!(
-            "Au plus {} à tirer pour {} options — laissez-en au moins 1.",
-            clean.len() - 1,
-            clean.len()
-        ));
+        let max = clean.len() - 1;
+        let n = clean.len();
+        return Err(match lang.unwrap_or("fr") {
+            "en" => format!("At most {max} to draw for {n} options — leave at least 1."),
+            "es" => format!("Como máximo {max} para sortear con {n} opciones — deje al menos 1."),
+            "de" => format!("Höchstens {max} bei {n} Optionen ziehen — lassen Sie mindestens 1 übrig."),
+            _ => format!("Au plus {max} à tirer pour {n} options — laissez-en au moins 1."),
+        });
     }
     if count > clean.len() {
-        return Err(format!(
-            "À tirer ({count}) > options restantes ({}) — réduisez le nombre ou ajoutez des options.",
-            clean.len()
+        return Err(super::tr(
+            lang,
+            "Réduisez le nombre à tirer ou ajoutez des options.",
+            "Reduce the number to draw or add options.",
+            "Reduzca el número a sortear o añada opciones.",
+            "Reduzieren Sie die Anzahl oder fügen Sie Optionen hinzu.",
         ));
     }
     let mut rng = rand::rng();
@@ -79,25 +104,25 @@ mod tests {
 
     #[test]
     fn rejects_empty_and_singleton() {
-        assert!(draw(&[], 1, false).is_err());
-        assert!(draw(&opts(&["  ", ""]), 1, false).is_err());
-        assert!(draw(&opts(&["solo"]), 1, false).is_err());
+        assert!(draw(&[], 1, false, None).is_err());
+        assert!(draw(&opts(&["  ", ""]), 1, false, None).is_err());
+        assert!(draw(&opts(&["solo"]), 1, false, None).is_err());
     }
 
     #[test]
     fn rejects_bad_count() {
         let o = opts(&["a", "b", "c"]);
-        assert!(draw(&o, 0, false).is_err());
-        assert!(draw(&o, 3, false).is_err(), "plafond N-1");
-        assert!(draw(&o, 4, false).is_err());
-        assert!(draw(&o, 3, true).is_err());
-        assert!(draw(&o, 2, true).is_ok());
+        assert!(draw(&o, 0, false, None).is_err());
+        assert!(draw(&o, 3, false, None).is_err(), "plafond N-1");
+        assert!(draw(&o, 4, false, None).is_err());
+        assert!(draw(&o, 3, true, None).is_err());
+        assert!(draw(&o, 2, true, None).is_ok());
     }
 
     #[test]
     fn winners_come_from_options() {
         let o = opts(&["a", "b", "c", "d"]);
-        let r = draw(&o, 2, true).unwrap();
+        let r = draw(&o, 2, true, None).unwrap();
         assert_eq!(r.winners.len(), 2);
         for w in &r.winners {
             assert!(o.contains(w));
@@ -111,14 +136,14 @@ mod tests {
     #[test]
     fn with_replacement_keeps_full_list() {
         let o = opts(&["a", "b", "c"]);
-        let r = draw(&o, 2, false).unwrap();
+        let r = draw(&o, 2, false, None).unwrap();
         assert_eq!(r.winners.len(), 2);
         assert_eq!(r.remaining, o);
     }
 
     #[test]
     fn trims_and_skips_blank_lines() {
-        let r = draw(&opts(&["  a  ", "", "b"]), 1, true).unwrap();
+        let r = draw(&opts(&["  a  ", "", "b"]), 1, true, None).unwrap();
         assert_eq!(r.winners.len(), 1);
         assert!(["a", "b"].contains(&r.winners[0].as_str()));
     }

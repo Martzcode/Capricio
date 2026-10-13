@@ -1,13 +1,14 @@
 import { Component, computed, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { HistoryService } from "../../services/history.service";
+import { I18nService } from "../../services/i18n.service";
 import { ProsConsArg, ProsConsEvaluation, ProsConsService } from "../../services/pros-cons.service";
 import { ToastService } from "../../services/toast.service";
 
 const WEIGHTS = [
-  { value: 1, label: "Faible" },
-  { value: 2, label: "Moyen" },
-  { value: 3, label: "Fort" },
+  { value: 1, key: "pc.wLow" },
+  { value: 2, key: "pc.wMid" },
+  { value: 3, key: "pc.wHigh" },
 ] as const;
 
 type Camp = "pros" | "cons";
@@ -27,6 +28,7 @@ export class ProsConsComponent {
   private readonly evaluations = inject(ProsConsService);
   private readonly history = inject(HistoryService);
   private readonly toast = inject(ToastService);
+  readonly i18n = inject(I18nService);
 
   readonly title = signal("");
   readonly pros = signal<ProsConsArg[]>([{ label: "", weight: 2 }]);
@@ -40,6 +42,12 @@ export class ProsConsComponent {
     const c = this.cons().some((a) => a.label.trim().length > 0);
     return p !== c;
   });
+
+  /** Les deux camps avec libellés localisés (réactifs à la langue). */
+  readonly camps = computed(() => [
+    { key: "pros" as Camp, name: this.i18n.t("pc.pros"), args: this.pros() },
+    { key: "cons" as Camp, name: this.i18n.t("pc.cons"), args: this.cons() },
+  ]);
 
   setTitle(value: string): void {
     this.title.set(value);
@@ -75,13 +83,13 @@ export class ProsConsComponent {
       );
       this.evaluation.set(res);
       await this.history.add({
-        tool: "Pour / Contre",
+        tool: this.i18n.t("tools.prosCons"),
         title: this.title().trim(),
         resume: `${res.verdict} (${res.scorePour} vs ${res.scoreContre})`,
         details: { pros: this.nonEmpty(this.pros()), cons: this.nonEmpty(this.cons()), evaluation: res },
       });
     } catch (e) {
-      this.toast.show(typeof e === "string" ? e : "Évaluation impossible.", "error");
+      this.toast.show(typeof e === "string" ? e : this.i18n.t("pc.error"), "error");
     }
   }
 

@@ -1,9 +1,10 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { RecentListComponent } from "../../components/recent-list/recent-list.component";
 import { ToolTileComponent, ToolDef } from "../../components/tool-tile/tool-tile.component";
 import { HistoryService } from "../../services/history.service";
+import { I18nService } from "../../services/i18n.service";
 import { ToastService } from "../../services/toast.service";
 
 const TUTORIAL_KEY = "capricio.hideTutorial";
@@ -23,32 +24,26 @@ const TUTORIAL_KEY = "capricio.hideTutorial";
 export class HomeComponent {
   readonly history = inject(HistoryService);
   private readonly toast = inject(ToastService);
+  readonly i18n = inject(I18nService);
   readonly showTutorial = signal(!this.isTutorialHidden());
   readonly showClearConfirm = signal(false);
 
-  readonly fastTools: ToolDef[] = [
-    { id: "coin", title: "Pile ou face", desc: "Trancher en 1 clic", icon: "◐", route: "/coin" },
-    { id: "number", title: "Nombre aléatoire", desc: "Entre 2 bornes", icon: "#", route: "/number" },
-    { id: "draw", title: "Tirage au sort", desc: "Dans une liste", icon: "☰", route: "/draw" },
-  ];
-  readonly slowTools: ToolDef[] = [
-    { id: "pros-cons", title: "Pour / Contre", desc: "Peser une décision", icon: "±", route: "/pros-cons" },
-  ];
+  readonly fastTools = computed<ToolDef[]>(() => [
+    { id: "coin", title: this.i18n.t("tools.coin"), desc: this.i18n.t("tools.coinDesc"), icon: "◐", route: "/coin" },
+    { id: "number", title: this.i18n.t("tools.number"), desc: this.i18n.t("tools.numberDesc"), icon: "#", route: "/number" },
+    { id: "draw", title: this.i18n.t("tools.draw"), desc: this.i18n.t("tools.drawDesc"), icon: "☰", route: "/draw" },
+  ]);
+  readonly slowTools = computed<ToolDef[]>(() => [
+    { id: "pros-cons", title: this.i18n.t("tools.prosCons"), desc: this.i18n.t("tools.prosConsDesc"), icon: "±", route: "/pros-cons" },
+  ]);
 
-  dismissTutorial(): void {    try {
+  dismissTutorial(): void {
+    try {
       localStorage.setItem(TUTORIAL_KEY, "1");
     } catch {
       /* stockage indisponible : le bandeau reviendra */
     }
     this.showTutorial.set(false);
-  }
-
-  private isTutorialHidden(): boolean {
-    try {
-      return localStorage.getItem(TUTORIAL_KEY) === "1";
-    } catch {
-      return false;
-    }
   }
 
   /** Corbeille "Tout l'historique" : effacement complet après confirmation (F6 §5.3). */
@@ -61,8 +56,16 @@ export class HomeComponent {
     try {
       await this.history.clear();
     } catch {
-      this.toast.show("Effacement impossible.", "error");
+      this.toast.show(this.i18n.t("history.clearError"), "error");
     }
     this.showClearConfirm.set(false);
+  }
+
+  private isTutorialHidden(): boolean {
+    try {
+      return localStorage.getItem(TUTORIAL_KEY) === "1";
+    } catch {
+      return false;
+    }
   }
 }

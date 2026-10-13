@@ -1,5 +1,6 @@
-import { Injectable, computed, signal } from "@angular/core";
+import { Injectable, computed, inject, signal } from "@angular/core";
 import { invoke } from "@tauri-apps/api/core";
+import { I18nService } from "./i18n.service";
 
 /** Résumé affiché dans les récents (F1) et l'historique (F6). */
 export interface DecisionSummary {
@@ -26,6 +27,7 @@ interface DecisionRow {
  */
 @Injectable({ providedIn: "root" })
 export class HistoryService {
+  private readonly i18n = inject(I18nService);
   private readonly all = signal<DecisionSummary[]>([]);
   /** Les 3 dernières pour l'accueil (§5.1). */
   readonly recent3 = computed(() => this.all().slice(0, 3));
@@ -36,7 +38,7 @@ export class HistoryService {
   async load(): Promise<void> {
     try {
       const rows = await invoke<DecisionRow[]>("get_history", { limit: 200 });
-      this.all.set(rows.map(toSummary));
+      this.all.set(rows.map((r) => this.toSummary(r)));
     } catch {
       this.all.set([]);
     }
@@ -44,7 +46,7 @@ export class HistoryService {
 
   /** Sauvegarde auto après chaque décision (§13.2). */
   async add(input: { tool: string; title: string; resume: string; details: unknown }): Promise<void> {
-    const at = new Date().toLocaleString("fr-FR");
+    const at = this.i18n.formatDate(new Date());
     try {
       const id = await invoke<number>("save_decision", {
         typeOutil: input.tool,
@@ -54,7 +56,7 @@ export class HistoryService {
       });
       this.all.update((list) => [{ id, tool: input.tool, title: input.title, result: input.resume, at }, ...list]);
     } catch {
-      throw "Historique non enregistré.";
+      throw this.i18n.t("common.historyError");
     }
   }
 
@@ -67,23 +69,23 @@ export class HistoryService {
     await invoke("clear_history", {});
     this.all.set([]);
   }
-}
 
-function toSummary(row: DecisionRow): DecisionSummary {
-  let resume = row.resultat;
-  try {
-    const parsed: unknown = JSON.parse(row.resultat);
-    if (typeof parsed === "object" && parsed !== null && "resume" in parsed) {
-      resume = String((parsed as Record<string, unknown>)["resume"]);
+  private toSummary(row: DecisionRow): DecisionSummary {
+    let resume = row.resultat;
+    try {
+      const parsed: unknown = JSON.parse(row.resultat);
+      if (typeof parsed === "object" && parsed !== null && "resume" in parsed) {
+        resume = String((parsed as Record<string, unknown>)["resume"]);
+      }
+    } catch {
+      /* resultat brut (ligne legacy) */
     }
-  } catch {
-    /* resultat brut (ligne legacy) */
+    let at = row.dateCreation;
+    try {
+      at = new Date(row.dateCreation).toLocaleString(this.i18n.locale());
+    } catch {
+      /* garde la valeur brute */
+    }
+    return { id: row.id, tool: row.typeOutil, title: row.titre, result: resume, at };
   }
-  let at = row.dateCreation;
-  try {
-    at = new Date(row.dateCreation).toLocaleString("fr-FR");
-  } catch {
-    /* garde la valeur brute */
-  }
-  return { id: row.id, tool: row.typeOutil, title: row.titre, result: resume, at };
 }

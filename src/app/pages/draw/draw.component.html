@@ -1,22 +1,22 @@
 <div class="draw-page">
-  <a class="back" routerLink="/">← Accueil</a>
-  <h1>Tirage au sort</h1>
+  <a class="back" routerLink="/">{{ i18n.t("common.back") }}</a>
+  <h1>{{ i18n.t("draw.title") }}</h1>
 
-  <label class="list-label" for="draw-options">Options (une par ligne)</label>
+  <label class="list-label" for="draw-options">{{ i18n.t("draw.listLabel") }}</label>
   <textarea
     id="draw-options"
     rows="6"
     [value]="rawText()"
     (input)="setText($any($event.target).value)"
-    placeholder="Resto italien&#10;Sushi&#10;Crêperie"
+    [placeholder]="i18n.t('draw.placeholder')"
   ></textarea>
-  <p class="counter" aria-live="polite">{{ options().length }} option{{ options().length > 1 ? "s" : "" }}</p>
+  <p class="counter" aria-live="polite">{{ i18n.t(options().length === 1 ? "draw.counterOne" : "draw.counterOther", { count: options().length }) }}</p>
 
   <div class="opts">
-    <div class="stepper" role="group" aria-label="Nombre d'éléments à tirer">
-      <button type="button" (click)="stepCount(-1)" [disabled]="count() <= 1" aria-label="Réduire le nombre">−</button>
-      <span aria-live="polite">{{ count() }} à tirer (max {{ maxCount() }})</span>
-      <button type="button" (click)="stepCount(1)" [disabled]="count() >= maxCount()" aria-label="Augmenter le nombre">+</button>
+    <div class="stepper" role="group" [attr.aria-label]="i18n.t('draw.stepper')">
+      <button type="button" (click)="stepCount(-1)" [disabled]="count() <= 1" [attr.aria-label]="i18n.t('draw.less')">−</button>
+      <span aria-live="polite">{{ i18n.t("draw.toDraw", { count: count(), max: maxCount() }) }}</span>
+      <button type="button" (click)="stepCount(1)" [disabled]="count() >= maxCount()" [attr.aria-label]="i18n.t('draw.more')">+</button>
     </div>
     <label class="check">
       <input
@@ -24,27 +24,27 @@
         [checked]="withoutReplacement()"
         (change)="toggleReplacement()"
       />
-      Retirer les tirés de la liste
+      {{ i18n.t("draw.remove") }}
     </label>
   </div>
 
   @if (winners().length > 0) {
-    <section class="result" aria-live="polite" aria-atomic="true" aria-label="Résultat du tirage">
-      <h2>Résultat</h2>
+    <section class="result" aria-live="polite" aria-atomic="true" [attr.aria-label]="i18n.t('draw.result')">
+      <h2>{{ i18n.t("draw.result") }}</h2>
       <ul>
         @for (w of winners(); track $index) {
           <li class="winner-card">{{ w }}</li>
         }
       </ul>
       @if (withoutReplacement()) {
-        <p class="rest">Reste {{ remainingCount() }} option{{ remainingCount() > 1 ? "s" : "" }} dans la liste.</p>
+        <p class="rest">{{ i18n.t(remainingCount() === 1 ? "draw.restOne" : "draw.restOther", { count: remainingCount() }) }}</p>
       }
     </section>
   }
 
   <div class="actions">
     <button type="button" class="btn-primary" (click)="draw()">
-      {{ winners().length > 0 ? "Relancer" : "Tirer" }}
+      {{ winners().length > 0 ? i18n.t("draw.again") : i18n.t("draw.go") }}
     </button>
   </div>
 </div>

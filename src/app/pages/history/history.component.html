@@ -1,19 +1,19 @@
 <div class="history-page">
   <div class="head">
-    <a class="back" routerLink="/">← Accueil</a>
+    <a class="back" routerLink="/">{{ i18n.t("common.back") }}</a>
     <button
       type="button"
       class="clear"
       (click)="showClearConfirm.set(true)"
       [disabled]="history.entries().length === 0"
     >
-      Tout effacer
+      {{ i18n.t("history.clear") }}
     </button>
   </div>
-  <h1>Historique</h1>
+  <h1>{{ i18n.t("history.title") }}</h1>
 
   @if (history.entries().length === 0) {
-    <p class="empty">Aucune décision enregistrée pour l'instant.</p>
+    <p class="empty">{{ i18n.t("history.empty") }}</p>
   } @else {
     <ol class="list">
       @for (d of history.entries(); track d.id) {
@@ -28,8 +28,8 @@
             type="button"
             class="rm"
             (click)="askDelete(d.id)"
-            [attr.aria-label]="'Supprimer « ' + (d.title || d.result) + ' »'"
-            title="Supprimer"
+            [attr.aria-label]="i18n.t('history.deleteAria', { title: d.title || d.result })"
+            [title]="i18n.t('history.delete')"
           >
             ✕
           </button>
@@ -41,9 +41,10 @@
 
 @if (pendingDelete() !== null) {
   <app-confirm-dialog
-    title="Supprimer cette décision ?"
-    message="Elle sera définitivement retirée de l'historique."
-    confirmLabel="Supprimer"
+    [title]="i18n.t('history.delTitle')"
+    [message]="i18n.t('history.delMsg')"
+    [confirmLabel]="i18n.t('history.delOk')"
+    [cancelLabel]="i18n.t('common.cancel')"
     (confirmed)="confirmDelete()"
     (cancelled)="pendingDelete.set(null)"
   />
@@ -51,9 +52,10 @@
 
 @if (showClearConfirm()) {
   <app-confirm-dialog
-    title="Supprimer tout l'historique ?"
-    message="Toutes les décisions enregistrées seront définitivement effacées."
-    confirmLabel="Tout supprimer"
+    [title]="i18n.t('history.clearTitle')"
+    [message]="i18n.t('history.clearMsg')"
+    [confirmLabel]="i18n.t('history.clearOk')"
+    [cancelLabel]="i18n.t('common.cancel')"
     (confirmed)="confirmClear()"
     (cancelled)="showClearConfirm.set(false)"
   />

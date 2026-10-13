@@ -1,5 +1,5 @@
 @if (items().length === 0) {
-  <p class="recent-empty">Aucune décision pour l'instant — lancez votre premier tirage.</p>
+  <p class="recent-empty">{{ i18n.t("recent.empty") }}</p>
 } @else {
   <ol class="recent">
     @for (d of items(); track d.id) {
