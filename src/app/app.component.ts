@@ -2,11 +2,12 @@ import { Component, HostListener, OnDestroy, OnInit, inject } from "@angular/cor
 import { Router, RouterOutlet } from "@angular/router";
 import { invoke } from "@tauri-apps/api/core";
 import { TitlebarComponent } from "./components/titlebar/titlebar.component";
+import { ToastComponent } from "./components/toast/toast.component";
 
 /** Shell applicatif : titlebar custom + contenu routé (§5.4, §14). */
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet, TitlebarComponent],
+  imports: [RouterOutlet, TitlebarComponent, ToastComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
 })

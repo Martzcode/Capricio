@@ -1,0 +1,3 @@
+@if (toast.message()) {
+  <p class="toast" [class.leaving]="toast.leaving()" role="alert">{{ toast.message() }}</p>
+}

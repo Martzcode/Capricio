@@ -37,10 +37,6 @@
     }
   </div>
 
-  @if (error()) {
-    <p class="error" role="alert">{{ error() }}</p>
-  }
-
   <div class="actions">
     <button type="button" class="btn-primary" (click)="flip()" [disabled]="flipping()">
       {{ result() ? "Rejouer" : "Lancer" }}

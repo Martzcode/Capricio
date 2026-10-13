@@ -1,0 +1,57 @@
+<div class="number-page">
+  <a class="back" routerLink="/">← Accueil</a>
+  <h1>Nombre aléatoire</h1>
+
+  <form class="bounds" (submit)="$event.preventDefault(); draw()">
+    <label>
+      Minimum
+      <input
+        type="number"
+        [value]="min()"
+        (input)="setBound('min', $any($event.target).value)"
+        aria-label="Borne minimale"
+      />
+    </label>
+    <label>
+      Maximum
+      <input
+        type="number"
+        [value]="max()"
+        (input)="setBound('max', $any($event.target).value)"
+        aria-label="Borne maximale"
+      />
+    </label>
+    <label class="check">
+      <input
+        type="checkbox"
+        [checked]="withoutRepetition()"
+        (change)="toggleRepetition()"
+        aria-label="Tirer sans répétition pendant la session"
+      />
+      Sans répétition
+    </label>
+    <p class="whole">Nombres entiers uniquement</p>
+  </form>
+
+  <div class="stage" aria-live="polite" aria-atomic="true">
+    @if (value() !== null) {
+      <p class="big">{{ value() }}</p>
+    } @else {
+      <p class="hint">Cliquez sur Tirer</p>
+    }
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-primary" (click)="draw()">
+      {{ value() === null ? "Tirer" : "Tirer un autre nombre" }}
+    </button>
+  </div>
+
+  @if (tail().length > 0) {
+    <div class="tail" aria-label="5 derniers tirages">
+      @for (n of tail(); track $index) {
+        <span class="chip">{{ n }}</span>
+      }
+    </div>
+  }
+</div>

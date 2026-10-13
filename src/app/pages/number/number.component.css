@@ -1,0 +1,119 @@
+.number-page {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 8px 4px 24px;
+  text-align: center;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.number-page h1 {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+}
+
+.bounds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.bounds > label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bounds input[type="number"] {
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.check {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: var(--fg) !important;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.whole {
+  margin: 0;
+  align-self: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stage {
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.big {
+  margin: 0;
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+}
+
+.actions {
+  margin: 12px 0 16px;
+}
+
+.tail {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.9rem;
+}

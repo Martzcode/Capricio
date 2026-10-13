@@ -107,11 +107,6 @@
   color: var(--muted);
 }
 
-.error {
-  color: var(--danger);
-  font-weight: 600;
-}
-
 .actions {
   margin-top: 8px;
 }

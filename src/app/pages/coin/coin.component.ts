@@ -2,6 +2,7 @@ import { Component, OnDestroy, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CoinService, CoinResult } from "../../services/coin.service";
 import { HistoryService } from "../../services/history.service";
+import { ToastService } from "../../services/toast.service";
 
 const FLIP_MS = 700;
 
@@ -19,13 +20,13 @@ const FLIP_MS = 700;
 export class CoinComponent implements OnDestroy {
   private readonly coin = inject(CoinService);
   private readonly history = inject(HistoryService);
+  private readonly toast = inject(ToastService);
   private timer: ReturnType<typeof setTimeout> | undefined;
 
   readonly labelA = signal("Pile");
   readonly labelB = signal("Face");
   readonly result = signal<CoinResult | null>(null);
   readonly flipping = signal(false);
-  readonly error = signal("");
 
   setLabel(which: 0 | 1, value: string): void {
     if (which === 0) this.labelA.set(value);
@@ -34,7 +35,6 @@ export class CoinComponent implements OnDestroy {
 
   async flip(): Promise<void> {
     if (this.flipping()) return;
-    this.error.set("");
     this.flipping.set(true);
     try {
       const res = await this.coin.flip([this.labelA(), this.labelB()]);
@@ -56,7 +56,7 @@ export class CoinComponent implements OnDestroy {
       }, wait);
     } catch (e) {
       this.flipping.set(false);
-      this.error.set(typeof e === "string" ? e : "Tirage impossible.");
+      this.toast.show(typeof e === "string" ? e : "Tirage impossible.", "error");
     }
   }
 
