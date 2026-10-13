@@ -1,0 +1,8 @@
+<a class="tile" [routerLink]="tool().route" [attr.aria-label]="tool().title + ' : ' + tool().desc">
+  <span class="tile-icon" aria-hidden="true">{{ tool().icon }}</span>
+  <span class="tile-text">
+    <span class="tile-title">{{ tool().title }}</span>
+    <span class="tile-desc">{{ tool().desc }}</span>
+  </span>
+  <span class="tile-go" aria-hidden="true">→</span>
+</a>

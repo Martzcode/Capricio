@@ -1,0 +1,106 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.5vh, 26px);
+  /* Fluide : s'élargit avec la fenêtre, plafonné pour rester lisible (§14). */
+  max-width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: 8px 4px 24px;
+}
+
+.tutorial {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+}
+
+.tutorial p {
+  margin: 0;
+}
+
+.tutorial button {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.tutorial button:hover {
+  border-color: var(--accent);
+}
+
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+
+.group-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.group-dot.fast {
+  background: var(--accent);
+}
+
+.group-dot.slow {
+  background: transparent;
+  border: 2px solid var(--accent);
+}
+
+.tiles {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+}
+
+/* Grand écran uniquement : cartes plafonnées, le surplus élargit les
+   gouttières (space-between) au lieu d'étirer les cartes. */
+@media (min-width: 1150px) {
+  .tiles {
+    grid-template-columns: repeat(3, minmax(0, 320px));
+    justify-content: space-between;
+    row-gap: 16px;
+  }
+}
+
+.recent-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.recent-head .group-title {
+  margin: 0;
+}
+
+.recent-head a {
+  color: var(--accent);
+  font-size: 0.85rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.recent-head a:hover {
+  text-decoration: underline;
+}

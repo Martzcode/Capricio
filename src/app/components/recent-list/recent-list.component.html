@@ -1,0 +1,13 @@
+@if (items().length === 0) {
+  <p class="recent-empty">Aucune décision pour l'instant — lancez votre premier tirage.</p>
+} @else {
+  <ol class="recent">
+    @for (d of items(); track d.id) {
+      <li class="recent-item">
+        <span class="recent-tool">{{ d.tool }}</span>
+        <span class="recent-title">{{ d.title || d.result }}</span>
+        <time class="recent-at">{{ d.at }}</time>
+      </li>
+    }
+  </ol>
+}

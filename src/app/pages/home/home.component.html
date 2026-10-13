@@ -1,0 +1,34 @@
+<div class="home">
+  @if (showTutorial()) {
+    <section class="tutorial" aria-label="Premiers pas">
+      <p><strong>Bienvenue sur Capricio.</strong> Tranchez vite (tirage) ou posément (pour/contre) — 100&nbsp;% hors-ligne.</p>
+      <button type="button" (click)="dismissTutorial()">Compris, ne plus afficher</button>
+    </section>
+  }
+
+  <section aria-labelledby="fast-title">
+    <h2 id="fast-title" class="group-title"><span class="group-dot fast" aria-hidden="true"></span>Décision rapide</h2>
+    <div class="tiles">
+      @for (t of fastTools; track t.id) {
+        <app-tool-tile [tool]="t" />
+      }
+    </div>
+  </section>
+
+  <section aria-labelledby="slow-title">
+    <h2 id="slow-title" class="group-title"><span class="group-dot slow" aria-hidden="true"></span>Décision réfléchie</h2>
+    <div class="tiles">
+      @for (t of slowTools; track t.id) {
+        <app-tool-tile [tool]="t" />
+      }
+    </div>
+  </section>
+
+  <section aria-labelledby="recent-title">
+    <div class="recent-head">
+      <h2 id="recent-title" class="group-title">Récentes</h2>
+      <a routerLink="/history">Tout l'historique →</a>
+    </div>
+    <app-recent-list [items]="history.recent()" />
+  </section>
+</div>
