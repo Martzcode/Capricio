@@ -1,0 +1,49 @@
+<div class="coin-page">
+  <a class="back" routerLink="/">← Accueil</a>
+  <h1>Pile ou face</h1>
+
+  <form class="labels" (submit)="$event.preventDefault(); flip()">
+    <label>
+      Côté 1
+      <input
+        type="text"
+        maxlength="20"
+        [value]="labelA()"
+        (input)="setLabel(0, $any($event.target).value)"
+        aria-label="Libellé du côté 1"
+      />
+    </label>
+    <label>
+      Côté 2
+      <input
+        type="text"
+        maxlength="20"
+        [value]="labelB()"
+        (input)="setLabel(1, $any($event.target).value)"
+        aria-label="Libellé du côté 2"
+      />
+    </label>
+  </form>
+
+  <div class="stage" aria-live="polite" aria-atomic="true">
+    @if (flipping()) {
+      <div class="piece spinning" aria-label="Pièce en rotation">?</div>
+    } @else if (result()) {
+      <div class="piece landed">{{ result()?.winner?.charAt(0) }}</div>
+      <p class="winner">{{ result()?.winner }}</p>
+    } @else {
+      <div class="piece idle" aria-hidden="true">◐</div>
+      <p class="hint">Cliquez sur Lancer</p>
+    }
+  </div>
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <div class="actions">
+    <button type="button" class="btn-primary" (click)="flip()" [disabled]="flipping()">
+      {{ result() ? "Rejouer" : "Lancer" }}
+    </button>
+  </div>
+</div>

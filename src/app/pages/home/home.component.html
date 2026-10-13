@@ -27,8 +27,35 @@
   <section aria-labelledby="recent-title">
     <div class="recent-head">
       <h2 id="recent-title" class="group-title">Récentes</h2>
-      <a routerLink="/history">Tout l'historique →</a>
+      <div class="recent-actions">
+        <a routerLink="/history">Tout l'historique →</a>
+        <button
+          type="button"
+          class="trash-btn"
+          (click)="clearHistory()"
+          [disabled]="history.recent().length === 0"
+          aria-label="Supprimer tout l'historique"
+          title="Supprimer tout l'historique"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+            <path d="M2 4h12" />
+            <path d="M6.5 4V2.8c0-.4.3-.8.8-.8h1.4c.4 0 .8.4.8.8V4" />
+            <path d="M3.5 4l.7 9.2c.1.4.4.8.8.8h6c.4 0 .7-.4.8-.8L12.5 4" />
+            <path d="M6.5 7v4M9.5 7v4" />
+          </svg>
+        </button>
+      </div>
     </div>
-    <app-recent-list [items]="history.recent()" />
+    <app-recent-list [items]="history.recent().slice(0, 3)" />
   </section>
 </div>
+
+@if (showClearConfirm()) {
+  <app-confirm-dialog
+    title="Supprimer tout l'historique ?"
+    message="Toutes les décisions enregistrées seront définitivement effacées."
+    confirmLabel="Tout supprimer"
+    (confirmed)="confirmClear()"
+    (cancelled)="showClearConfirm.set(false)"
+  />
+}

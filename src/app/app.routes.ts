@@ -1,5 +1,6 @@
 import { Route, Routes } from "@angular/router";
 import { ComingSoonComponent } from "./pages/coming-soon/coming-soon.component";
+import { CoinComponent } from "./pages/coin/coin.component";
 import { HomeComponent } from "./pages/home/home.component";
 
 const tool = (path: string, title: string): Route => ({
@@ -10,7 +11,7 @@ const tool = (path: string, title: string): Route => ({
 
 export const routes: Routes = [
   { path: "", component: HomeComponent },
-  tool("coin", "Pile ou face"),
+  { path: "coin", component: CoinComponent },
   tool("number", "Nombre aléatoire"),
   tool("draw", "Tirage au sort"),
   tool("pros-cons", "Pour / Contre"),

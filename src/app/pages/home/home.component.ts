@@ -1,5 +1,6 @@
 import { Component, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
+import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { RecentListComponent } from "../../components/recent-list/recent-list.component";
 import { ToolTileComponent, ToolDef } from "../../components/tool-tile/tool-tile.component";
 import { HistoryService } from "../../services/history.service";
@@ -14,13 +15,14 @@ const TUTORIAL_KEY = "capricio.hideTutorial";
  */
 @Component({
   selector: "app-home",
-  imports: [RouterLink, ToolTileComponent, RecentListComponent],
+  imports: [RouterLink, ToolTileComponent, RecentListComponent, ConfirmDialogComponent],
   templateUrl: "./home.component.html",
   styleUrl: "./home.component.css",
 })
 export class HomeComponent {
   readonly history = inject(HistoryService);
   readonly showTutorial = signal(!this.isTutorialHidden());
+  readonly showClearConfirm = signal(false);
 
   readonly fastTools: ToolDef[] = [
     { id: "coin", title: "Pile ou face", desc: "Trancher en 1 clic", icon: "◐", route: "/coin" },
@@ -31,8 +33,7 @@ export class HomeComponent {
     { id: "pros-cons", title: "Pour / Contre", desc: "Peser une décision", icon: "±", route: "/pros-cons" },
   ];
 
-  dismissTutorial(): void {
-    try {
+  dismissTutorial(): void {    try {
       localStorage.setItem(TUTORIAL_KEY, "1");
     } catch {
       /* stockage indisponible : le bandeau reviendra */
@@ -46,5 +47,16 @@ export class HomeComponent {
     } catch {
       return false;
     }
+  }
+
+  /** Corbeille "Tout l'historique" : effacement complet après confirmation (F6 §5.3). */
+  clearHistory(): void {
+    if (this.history.recent().length === 0) return;
+    this.showClearConfirm.set(true);
+  }
+
+  confirmClear(): void {
+    this.history.clear();
+    this.showClearConfirm.set(false);
   }
 }

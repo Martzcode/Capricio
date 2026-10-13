@@ -1,5 +1,19 @@
 // Commandes métier ajoutées à l'Étape 1 (tools::*) et Étape 3 (ipc::*) — cf. Plan-Developpement.
+mod tools;
 mod zoom_lock;
+
+use tools::coin_flip::{self, CoinResult};
+
+/// Pile ou face (§7.1). `labels` optionnels, défaut Pile/Face.
+/// Contrat : in `{labels?: [string,string]}` → out `{winner, index}`.
+#[tauri::command]
+fn coin_flip(labels: Option<[String; 2]>) -> Result<CoinResult, String> {
+    let labels = labels.unwrap_or([
+        coin_flip::DEFAULT_LABELS[0].into(),
+        coin_flip::DEFAULT_LABELS[1].into(),
+    ]);
+    coin_flip::flip(labels)
+}
 
 /// Arme le verrou anti-zoom natif (Linux/WebKitGTK, no-op ailleurs).
 /// Appelée une fois au démarrage du frontend, quand la fenêtre existe.
@@ -12,7 +26,7 @@ fn init_zoom_lock() {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![init_zoom_lock])
+        .invoke_handler(tauri::generate_handler![init_zoom_lock, coin_flip])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

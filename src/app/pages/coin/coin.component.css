@@ -1,0 +1,122 @@
+.coin-page {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 8px 4px 24px;
+  text-align: center;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.coin-page h1 {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+}
+
+.labels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.labels label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.labels input {
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg);
+  font: inherit;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.labels input:focus {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-height: 190px;
+  justify-content: center;
+}
+
+.piece {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  border: 3px solid var(--accent);
+  color: var(--accent);
+  font-size: 2.6rem;
+  font-weight: 700;
+}
+
+.piece.spinning {
+  animation: coin-spin 0.7s ease-in-out;
+}
+
+@keyframes coin-spin {
+  from {
+    transform: rotateY(0);
+  }
+  to {
+    transform: rotateY(1080deg);
+  }
+}
+
+.winner {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+}
+
+.error {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.actions {
+  margin-top: 8px;
+}
+
+.actions .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

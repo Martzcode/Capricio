@@ -17,4 +17,9 @@ export interface DecisionSummary {
 @Injectable({ providedIn: "root" })
 export class HistoryService {
   readonly recent = signal<DecisionSummary[]>([]);
+
+  /** Vide l'historique (confirmé côté appelant ; persistance SQLite étape 2). */
+  clear(): void {
+    this.recent.set([]);
+  }
 }
