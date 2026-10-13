@@ -1,0 +1,102 @@
+import { Component, computed, inject, signal } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { HistoryService } from "../../services/history.service";
+import { ProsConsArg, ProsConsEvaluation, ProsConsService } from "../../services/pros-cons.service";
+import { ToastService } from "../../services/toast.service";
+
+const WEIGHTS = [
+  { value: 1, label: "Faible" },
+  { value: 2, label: "Moyen" },
+  { value: 3, label: "Fort" },
+] as const;
+
+type Camp = "pros" | "cons";
+
+/**
+ * F5 — Pour/contre pondéré MVP (§8.1) : titre, 2 colonnes dynamiques, poids
+ * Faible/Moyen/Fort, verdict Rust + garde-fou. Le résultat est effacé à chaque
+ * modification (jamais de verdict périmé affiché).
+ */
+@Component({
+  selector: "app-pros-cons",
+  imports: [RouterLink],
+  templateUrl: "./pros-cons.component.html",
+  styleUrl: "./pros-cons.component.css",
+})
+export class ProsConsComponent {
+  private readonly evaluations = inject(ProsConsService);
+  private readonly history = inject(HistoryService);
+  private readonly toast = inject(ToastService);
+
+  readonly title = signal("");
+  readonly pros = signal<ProsConsArg[]>([{ label: "", weight: 2 }]);
+  readonly cons = signal<ProsConsArg[]>([{ label: "", weight: 2 }]);
+  readonly evaluation = signal<ProsConsEvaluation | null>(null);
+  readonly weights = WEIGHTS;
+
+  /** Alerte biais : un seul camp rempli (§8.1). */
+  readonly singleSided = computed(() => {
+    const p = this.pros().some((a) => a.label.trim().length > 0);
+    const c = this.cons().some((a) => a.label.trim().length > 0);
+    return p !== c;
+  });
+
+  setTitle(value: string): void {
+    this.title.set(value);
+    this.evaluation.set(null);
+  }
+
+  setLabel(camp: Camp, index: number, value: string): void {
+    this.update(camp, index, { label: value });
+  }
+
+  setWeight(camp: Camp, index: number, weight: 1 | 2 | 3): void {
+    this.update(camp, index, { weight });
+  }
+
+  add(camp: Camp): void {
+    const list = (camp === "pros" ? this.pros : this.cons)();
+    (camp === "pros" ? this.pros : this.cons).set([...list, { label: "", weight: 2 }]);
+    this.evaluation.set(null);
+  }
+
+  remove(camp: Camp, index: number): void {
+    const set = camp === "pros" ? this.pros : this.cons;
+    set.set(set().filter((_, i) => i !== index));
+    this.evaluation.set(null);
+  }
+
+  async evaluate(): Promise<void> {
+    try {
+      const res = await this.evaluations.evaluate(
+        this.title(),
+        this.nonEmpty(this.pros()),
+        this.nonEmpty(this.cons()),
+      );
+      this.evaluation.set(res);
+      this.history.recent.update((list) => [
+        {
+          id: Date.now(),
+          tool: "Pour / Contre",
+          title: this.title().trim(),
+          result: `${res.verdict} (${res.scorePour} vs ${res.scoreContre})`,
+          at: new Date().toLocaleString("fr-FR"),
+        },
+        ...list,
+      ]);
+    } catch (e) {
+      this.toast.show(typeof e === "string" ? e : "Évaluation impossible.", "error");
+    }
+  }
+
+  /** Les lignes vides ne partent pas au calcul (0+0 → verdict Indécis). */
+  private nonEmpty(args: ProsConsArg[]): ProsConsArg[] {
+    return args.filter((a) => a.label.trim().length > 0);
+  }
+
+  private update(camp: Camp, index: number, patch: Partial<ProsConsArg>): void {
+    const set = camp === "pros" ? this.pros : this.cons;
+    set.set(set().map((a, i) => (i === index ? { ...a, ...patch } : a)));
+    this.evaluation.set(null);
+  }
+}

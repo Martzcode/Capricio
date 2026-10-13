@@ -1,0 +1,50 @@
+<div class="draw-page">
+  <a class="back" routerLink="/">← Accueil</a>
+  <h1>Tirage au sort</h1>
+
+  <label class="list-label" for="draw-options">Options (une par ligne)</label>
+  <textarea
+    id="draw-options"
+    rows="6"
+    [value]="rawText()"
+    (input)="setText($any($event.target).value)"
+    placeholder="Resto italien&#10;Sushi&#10;Crêperie"
+  ></textarea>
+  <p class="counter" aria-live="polite">{{ options().length }} option{{ options().length > 1 ? "s" : "" }}</p>
+
+  <div class="opts">
+    <div class="stepper" role="group" aria-label="Nombre d'éléments à tirer">
+      <button type="button" (click)="stepCount(-1)" [disabled]="count() <= 1" aria-label="Réduire le nombre">−</button>
+      <span aria-live="polite">{{ count() }} à tirer (max {{ maxCount() }})</span>
+      <button type="button" (click)="stepCount(1)" [disabled]="count() >= maxCount()" aria-label="Augmenter le nombre">+</button>
+    </div>
+    <label class="check">
+      <input
+        type="checkbox"
+        [checked]="withoutReplacement()"
+        (change)="toggleReplacement()"
+      />
+      Retirer les tirés de la liste
+    </label>
+  </div>
+
+  @if (winners().length > 0) {
+    <section class="result" aria-live="polite" aria-atomic="true" aria-label="Résultat du tirage">
+      <h2>Résultat</h2>
+      <ul>
+        @for (w of winners(); track $index) {
+          <li class="winner-card">{{ w }}</li>
+        }
+      </ul>
+      @if (withoutReplacement()) {
+        <p class="rest">Reste {{ remainingCount() }} option{{ remainingCount() > 1 ? "s" : "" }} dans la liste.</p>
+      }
+    </section>
+  }
+
+  <div class="actions">
+    <button type="button" class="btn-primary" (click)="draw()">
+      {{ winners().length > 0 ? "Relancer" : "Tirer" }}
+    </button>
+  </div>
+</div>

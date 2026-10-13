@@ -1,0 +1,75 @@
+<div class="pc-page">
+  <a class="back" routerLink="/">← Accueil</a>
+  <h1>Pour / Contre</h1>
+
+  <label class="title-label" for="pc-title">Titre de la décision</label>
+  <input
+    id="pc-title"
+    type="text"
+    maxlength="120"
+    placeholder="Accepter l'offre chez Acme"
+    [value]="title()"
+    (input)="setTitle($any($event.target).value)"
+  />
+
+  @if (singleSided()) {
+    <p class="bias" role="note">Un seul camp est rempli — pensez aussi à l'autre côté pour éviter un biais.</p>
+  }
+
+  <div class="camps">
+    @for (camp of [{ key: "pros", name: "Pour" }, { key: "cons", name: "Contre" }]; track camp.key) {
+      <section [attr.aria-label]="'Arguments ' + camp.name">
+        <h2>{{ camp.name }}</h2>
+        @for (a of (camp.key === "pros" ? pros() : cons()); track $index; let i = $index) {
+          <div class="row">
+            <input
+              type="text"
+              maxlength="200"
+              placeholder="Argument…"
+              [value]="a.label"
+              (input)="setLabel($any(camp.key), i, $any($event.target).value)"
+              [attr.aria-label]="'Argument ' + camp.name + ' ' + (i + 1)"
+            />
+            <div class="seg" role="group" [attr.aria-label]="'Poids argument ' + (i + 1)">
+              @for (w of weights; track w.value) {
+                <button
+                  type="button"
+                  [class.on]="a.weight === w.value"
+                  [attr.aria-pressed]="a.weight === w.value"
+                  (click)="setWeight($any(camp.key), i, w.value)"
+                >
+                  {{ w.label }}
+                </button>
+              }
+            </div>
+            <button
+              type="button"
+              class="rm"
+              (click)="remove($any(camp.key), i)"
+              [attr.aria-label]="'Supprimer argument ' + camp.name + ' ' + (i + 1)"
+              title="Supprimer"
+            >
+              ✕
+            </button>
+          </div>
+        }
+        <button type="button" class="add" (click)="add($any(camp.key))">+ Ajouter un argument</button>
+      </section>
+    }
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-primary" (click)="evaluate()">Voir le verdict</button>
+  </div>
+
+  @if (evaluation(); as ev) {
+    <section class="verdict" aria-live="polite" aria-atomic="true" aria-label="Verdict">
+      <h2>{{ ev.verdict }}</h2>
+      <div class="bar" aria-hidden="true">
+        <span class="pour" [style.width.%]="ev.scorePour + ev.scoreContre === 0 ? 50 : (ev.scorePour / (ev.scorePour + ev.scoreContre)) * 100"></span>
+      </div>
+      <p class="scores">Pour {{ ev.scorePour }} · Contre {{ ev.scoreContre }} · écart {{ ev.ecartPct.toFixed(1) }} %</p>
+      <p class="disclaimer">Ceci reflète les arguments que vous avez saisis — une aide, pas une vérité.</p>
+    </section>
+  }
+</div>
