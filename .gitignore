@@ -1,45 +1,69 @@
-# Angular specific
-/dist/
-/out-tsc/
+# Angular
+dist/
+out-tsc/
 /tmp/
-/coverage/
-/e2e/test-output/
+coverage/
+e2e/test-output/
 /.angular/
 .angular/
+.sass-cache/
+/connect.lock
+/libpeerconnection.log
+testem.log
+/typings
 
-# Node modules and dependency files
-/node_modules/
-/package-lock.json
-/yarn.lock
-
-# Environment files
-/.env
-
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Logs
+# Node
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn.lock
+pnpm-debug.log*
 
-# Project docs (local only)
-docs/
+# Conserver le lock npm pour des installs reproductibles (ne pas ignorer package-lock.json)
+
+# Environnement
+.env
+.env.local
+.env.*.local
+
+# Angular CLI
+/.angular-cli.json
+/.ng/
+
+# TypeScript
+*.tsbuildinfo
 
 # Rust / Tauri
 src-tauri/target/
+target/
+src-tauri/gen/
 src-tauri/WixTools/
 *.AppImage
 *.deb
 *.rpm
 *.msi
 *.msix
+*.dmg
 
-# IDEs and OS
+# Docs projet (local uniquement, cf. demande initiale)
+docs/
+
+# IDEs
 .idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# OS
 .DS_Store
 Thumbs.db

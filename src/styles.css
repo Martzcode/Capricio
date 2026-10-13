@@ -1,0 +1,137 @@
+/* Design system minimal — tokens clair/sombre (F7, §10.1, §14). Contrastes ciblés WCAG AA (§13.3). */
+/* Esthétique : aplats mats + ombres subtiles. Aucun dégradé (linear/radial-gradient interdit). */
+
+:root,
+:root[data-theme="light"] {
+  --bg: #ffffff;
+  --fg: #14202e;
+  --muted: #5a6b7d;
+  --surface: #ffffff;
+  --surface-2: #eef3f9;
+  --titlebar-bg: #f7fafd;
+  --titlebar-fg: #14202e;
+  --border: #d9e4ef;
+  --border-strong: #b9cbdd;
+  --hover: rgb(0 102 255 / 0.08);
+  --active: rgb(0 102 255 / 0.15);
+  --accent: #0066ff;
+  --accent-contrast: #ffffff;
+  --accent-soft: #dbe9ff;
+  --danger: #c42b1c;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 8px 28px rgb(0 0 0 / 0.16);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #000000;
+  --fg: #ffffff;
+  --muted: #b5b5b5;
+  --surface: #1b1b1b;
+  --surface-2: #262626;
+  --titlebar-bg: #0a0a0a;
+  --titlebar-fg: #ffffff;
+  --border: #333333;
+  --border-strong: #4d4d4d;
+  --hover: rgb(255 144 0 / 0.12);
+  --active: rgb(255 144 0 / 0.2);
+  --accent: #ff9000;
+  --accent-contrast: #000000;
+  --accent-soft: #3a2200;
+  --danger: #e4695e;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 12px 32px rgb(0 0 0 / 0.5);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* Panoramique autorisé, pincement/zoom tactile désactivé (y c. WebKit natif). */
+  touch-action: pan-x pan-y;
+}
+
+body {
+  font-family: "Segoe UI", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+/* Focus visible pour navigation clavier (§13.3). */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Ascenseurs discrets. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 8px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Bouton primaire réutilisable (cohérence §14). */
+.btn-primary {
+  padding: 9px 18px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: filter 0.15s ease, transform 0.05s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.07);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+/* Option "désactiver les animations" (§14) + respect système. */
+:root[data-animations="off"] *,
+:root[data-animations="off"] *::before,
+:root[data-animations="off"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

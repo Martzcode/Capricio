@@ -1,0 +1,119 @@
+/* Barre de titre : 44px, aplat du thème + ombre fine, drag natif via data-tauri-drag-region. */
+.titlebar {
+  display: flex;
+  align-items: stretch;
+  height: 44px;
+  flex: 0 0 auto;
+  background: var(--titlebar-bg);
+  color: var(--titlebar-fg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.titlebar-drag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.app-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titlebar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px 0 2px;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: var(--hover);
+  color: var(--titlebar-fg);
+}
+
+.icon-btn:active {
+  background: var(--active);
+}
+
+.icon-btn.help {
+  font-weight: 700;
+}
+
+.icon-btn.close:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 4px;
+  padding-left: 6px;
+  border-left: 1px solid var(--border);
+}
+
+.about-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 0.45);
+}
+
+.about {
+  max-width: 360px;
+  margin: 16px;
+  padding: 24px;
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.about h2 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  letter-spacing: 0.01em;
+}
+
+.about p {
+  margin: 0 0 8px;
+}
+
+.about .muted {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
