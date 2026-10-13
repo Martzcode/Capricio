@@ -26,3 +26,20 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Project docs (local only)
+docs/
+
+# Rust / Tauri
+src-tauri/target/
+src-tauri/WixTools/
+*.AppImage
+*.deb
+*.rpm
+*.msi
+*.msix
+
+# IDEs and OS
+.idea/
+.DS_Store
+Thumbs.db
