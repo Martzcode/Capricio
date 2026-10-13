@@ -65,16 +65,12 @@ export class NumberComponent {
       }
       this.value.set(v);
       this.tail.update((t) => [v, ...t].slice(0, 5));
-      this.history.recent.update((list) => [
-        {
-          id: Date.now(),
-          tool: "Nombre aléatoire",
-          title: `${lo} – ${hi}`,
-          result: String(v),
-          at: new Date().toLocaleString("fr-FR"),
-        },
-        ...list,
-      ]);
+      await this.history.add({
+        tool: "Nombre aléatoire",
+        title: `${lo} – ${hi}`,
+        resume: String(v),
+        details: { min: lo, max: hi, value: v },
+      });
     } catch (e) {
       this.toast.show(typeof e === "string" ? e : "Tirage impossible.", "error");
     }

@@ -33,7 +33,7 @@
           type="button"
           class="trash-btn"
           (click)="clearHistory()"
-          [disabled]="history.recent().length === 0"
+          [disabled]="history.entries().length === 0"
           aria-label="Supprimer tout l'historique"
           title="Supprimer tout l'historique"
         >
@@ -46,7 +46,7 @@
         </button>
       </div>
     </div>
-    <app-recent-list [items]="history.recent().slice(0, 3)" />
+    <app-recent-list [items]="history.recent3()" />
   </section>
 </div>
 

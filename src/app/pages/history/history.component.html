@@ -1,0 +1,60 @@
+<div class="history-page">
+  <div class="head">
+    <a class="back" routerLink="/">← Accueil</a>
+    <button
+      type="button"
+      class="clear"
+      (click)="showClearConfirm.set(true)"
+      [disabled]="history.entries().length === 0"
+    >
+      Tout effacer
+    </button>
+  </div>
+  <h1>Historique</h1>
+
+  @if (history.entries().length === 0) {
+    <p class="empty">Aucune décision enregistrée pour l'instant.</p>
+  } @else {
+    <ol class="list">
+      @for (d of history.entries(); track d.id) {
+        <li class="item">
+          <span class="tool">{{ d.tool }}</span>
+          <span class="body">
+            <span class="title">{{ d.title || d.result }}</span>
+            <span class="result">{{ d.result }}</span>
+          </span>
+          <time>{{ d.at }}</time>
+          <button
+            type="button"
+            class="rm"
+            (click)="askDelete(d.id)"
+            [attr.aria-label]="'Supprimer « ' + (d.title || d.result) + ' »'"
+            title="Supprimer"
+          >
+            ✕
+          </button>
+        </li>
+      }
+    </ol>
+  }
+</div>
+
+@if (pendingDelete() !== null) {
+  <app-confirm-dialog
+    title="Supprimer cette décision ?"
+    message="Elle sera définitivement retirée de l'historique."
+    confirmLabel="Supprimer"
+    (confirmed)="confirmDelete()"
+    (cancelled)="pendingDelete.set(null)"
+  />
+}
+
+@if (showClearConfirm()) {
+  <app-confirm-dialog
+    title="Supprimer tout l'historique ?"
+    message="Toutes les décisions enregistrées seront définitivement effacées."
+    confirmLabel="Tout supprimer"
+    (confirmed)="confirmClear()"
+    (cancelled)="showClearConfirm.set(false)"
+  />
+}

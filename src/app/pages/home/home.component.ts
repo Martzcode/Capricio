@@ -4,6 +4,7 @@ import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-
 import { RecentListComponent } from "../../components/recent-list/recent-list.component";
 import { ToolTileComponent, ToolDef } from "../../components/tool-tile/tool-tile.component";
 import { HistoryService } from "../../services/history.service";
+import { ToastService } from "../../services/toast.service";
 
 const TUTORIAL_KEY = "capricio.hideTutorial";
 
@@ -21,6 +22,7 @@ const TUTORIAL_KEY = "capricio.hideTutorial";
 })
 export class HomeComponent {
   readonly history = inject(HistoryService);
+  private readonly toast = inject(ToastService);
   readonly showTutorial = signal(!this.isTutorialHidden());
   readonly showClearConfirm = signal(false);
 
@@ -51,12 +53,16 @@ export class HomeComponent {
 
   /** Corbeille "Tout l'historique" : effacement complet après confirmation (F6 §5.3). */
   clearHistory(): void {
-    if (this.history.recent().length === 0) return;
+    if (this.history.entries().length === 0) return;
     this.showClearConfirm.set(true);
   }
 
-  confirmClear(): void {
-    this.history.clear();
+  async confirmClear(): Promise<void> {
+    try {
+      await this.history.clear();
+    } catch {
+      this.toast.show("Effacement impossible.", "error");
+    }
     this.showClearConfirm.set(false);
   }
 }

@@ -3,6 +3,7 @@ import { Router, RouterOutlet } from "@angular/router";
 import { invoke } from "@tauri-apps/api/core";
 import { TitlebarComponent } from "./components/titlebar/titlebar.component";
 import { ToastComponent } from "./components/toast/toast.component";
+import { HistoryService } from "./services/history.service";
 
 /** Shell applicatif : titlebar custom + contenu routé (§5.4, §14). */
 @Component({
@@ -13,6 +14,7 @@ import { ToastComponent } from "./components/toast/toast.component";
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly history = inject(HistoryService);
   private readonly stopZoom: Array<() => void> = [];
 
   /** §5.4 : Échap revient toujours à l'accueil. */
@@ -24,6 +26,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Verrou anti-zoom natif (Linux/WebKitGTK, no-op ailleurs et hors Tauri).
     invoke("init_zoom_lock").catch(() => undefined);
+    // Historique persisté (échec silencieux hors Tauri → mémoire vide).
+    void this.history.load();
     // Zoom désactivé : layout fixe (§14 densité maîtrisée). Couvre le pincement
     // tactile, son équivalent natif WebKit (gestures Safari, molette+Ctrl des
     // pavés tactiles) et les raccourcis clavier Ctrl + molette/+/−/0.

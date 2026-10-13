@@ -60,16 +60,12 @@ export class DrawComponent {
         // La suite se joue sur le reste : la zone reflète la liste restante.
         this.rawText.set(res.remaining.join("\n"));
       }
-      this.history.recent.update((list) => [
-        {
-          id: Date.now(),
-          tool: "Tirage au sort",
-          title: `${options.length} option${options.length > 1 ? "s" : ""}`,
-          result: res.winners.join(", "),
-          at: new Date().toLocaleString("fr-FR"),
-        },
-        ...list,
-      ]);
+      await this.history.add({
+        tool: "Tirage au sort",
+        title: `${options.length} option${options.length > 1 ? "s" : ""}`,
+        resume: res.winners.join(", "),
+        details: { options, count: this.count(), winners: res.winners },
+      });
     } catch (e) {
       this.toast.show(typeof e === "string" ? e : "Tirage impossible.", "error");
     }

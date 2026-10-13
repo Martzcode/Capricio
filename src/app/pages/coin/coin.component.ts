@@ -43,16 +43,14 @@ export class CoinComponent implements OnDestroy {
       this.timer = setTimeout(() => {
         this.result.set(res);
         this.flipping.set(false);
-        this.history.recent.update((list) => [
-          {
-            id: Date.now(),
+        this.history
+          .add({
             tool: "Pile ou face",
             title: `${this.labelA()} / ${this.labelB()}`,
-            result: res.winner,
-            at: new Date().toLocaleString("fr-FR"),
-          },
-          ...list,
-        ]);
+            resume: res.winner,
+            details: { labels: [this.labelA(), this.labelB()], winner: res.winner },
+          })
+          .catch((e: unknown) => this.toast.show(typeof e === "string" ? e : "Historique non enregistré.", "error"));
       }, wait);
     } catch (e) {
       this.flipping.set(false);

@@ -74,16 +74,12 @@ export class ProsConsComponent {
         this.nonEmpty(this.cons()),
       );
       this.evaluation.set(res);
-      this.history.recent.update((list) => [
-        {
-          id: Date.now(),
-          tool: "Pour / Contre",
-          title: this.title().trim(),
-          result: `${res.verdict} (${res.scorePour} vs ${res.scoreContre})`,
-          at: new Date().toLocaleString("fr-FR"),
-        },
-        ...list,
-      ]);
+      await this.history.add({
+        tool: "Pour / Contre",
+        title: this.title().trim(),
+        resume: `${res.verdict} (${res.scorePour} vs ${res.scoreContre})`,
+        details: { pros: this.nonEmpty(this.pros()), cons: this.nonEmpty(this.cons()), evaluation: res },
+      });
     } catch (e) {
       this.toast.show(typeof e === "string" ? e : "Évaluation impossible.", "error");
     }
