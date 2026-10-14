@@ -5,17 +5,34 @@
   text-align: center;
 }
 
-.back {
-  display: inline-block;
+.top-bar {
+  display: flex;
+  justify-content: flex-start;
   margin-bottom: 8px;
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
 }
 
-.back:hover {
-  text-decoration: underline;
+.home-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--muted);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.home-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--hover);
+}
+
+.home-btn svg {
+  display: block;
 }
 
 .number-page h1 {

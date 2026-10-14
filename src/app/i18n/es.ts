@@ -1,6 +1,7 @@
 /** Español. */
 export const es: Record<string, string> = {
   "common.back": "← Inicio",
+  "common.home": "Inicio",
   "common.close": "Cerrar",
   "common.cancel": "Cancelar",
   "common.historyError": "Historial no guardado.",

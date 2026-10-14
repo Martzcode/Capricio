@@ -1,6 +1,7 @@
 /** English. */
 export const en: Record<string, string> = {
   "common.back": "← Home",
+  "common.home": "Home",
   "common.close": "Close",
   "common.cancel": "Cancel",
   "common.historyError": "History not saved.",

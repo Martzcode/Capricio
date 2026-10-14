@@ -1,6 +1,7 @@
 /** Deutsch. */
 export const de: Record<string, string> = {
   "common.back": "← Start",
+  "common.home": "Startseite",
   "common.close": "Schließen",
   "common.cancel": "Abbrechen",
   "common.historyError": "Verlauf nicht gespeichert.",

@@ -1,6 +1,7 @@
 /** Français — langue de référence (repli si clé manquante). */
 export const fr: Record<string, string> = {
   "common.back": "← Accueil",
+  "common.home": "Accueil",
   "common.close": "Fermer",
   "common.cancel": "Annuler",
   "common.historyError": "Historique non enregistré.",

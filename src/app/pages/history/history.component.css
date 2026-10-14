@@ -11,15 +11,28 @@
   margin-bottom: 8px;
 }
 
-.back {
-  color: var(--accent);
+.home-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--muted);
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
+  cursor: pointer;
 }
 
-.back:hover {
-  text-decoration: underline;
+.home-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--hover);
+}
+
+.home-btn svg {
+  display: block;
 }
 
 .clear {
