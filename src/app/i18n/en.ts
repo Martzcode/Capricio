@@ -11,7 +11,7 @@ export const en: Record<string, string> = {
   "titlebar.themeDark": "Dark theme (click: automatic)",
   "titlebar.themeAuto": "Automatic system theme (click: light)",
   "titlebar.about": "About Capricio",
-  "titlebar.aboutP1": "Decision helper app — 100% offline, local data.",
+  "titlebar.aboutP1": "Decision helper app: 100% offline, local data.",
   "titlebar.aboutP2": "Quick or thoughtful decisions, no account, no network (see SRS §1).",
   "titlebar.minimize": "Minimize window",
   "titlebar.minimizeTitle": "Minimize",
@@ -24,7 +24,7 @@ export const en: Record<string, string> = {
   "titlebar.lang": "Change language (current: {lang})",
 
   "home.tutoLead": "Welcome to Capricio.",
-  "home.tutoRest": "Decide fast (draw) or thoughtfully (pros & cons) — 100% offline.",
+  "home.tutoRest": "Decide fast (draw) or thoughtfully (pros & cons). 100% offline.",
   "home.tutoOk": "Got it, don't show again",
   "home.fast": "Quick decision",
   "home.slow": "Thoughtful decision",
@@ -35,7 +35,7 @@ export const en: Record<string, string> = {
   "home.clearMsg": "All saved decisions will be permanently erased.",
   "home.clearOk": "Delete all",
 
-  "recent.empty": "No decisions yet — run your first draw.",
+  "recent.empty": "No decisions yet. Run your first draw.",
 
   "tools.coin": "Coin flip",
   "tools.number": "Random number",
@@ -68,7 +68,7 @@ export const en: Record<string, string> = {
   "number.tail": "Last 5 draws",
   "number.notInteger": "{value} is not an integer.",
   "number.requiredInt": "Please enter an integer.",
-  "number.reset": "All values have been drawn — draw reset.",
+  "number.reset": "All values have been drawn. Draw reset.",
   "number.error": "Draw failed.",
 
   "draw.title": "Draw lots",
@@ -94,7 +94,7 @@ export const en: Record<string, string> = {
   "pc.title": "Pros & Cons",
   "pc.titleLabel": "Decision title",
   "pc.titlePh": "Accept the offer at Acme",
-  "pc.bias": "Only one side is filled in — consider the other side to avoid bias.",
+  "pc.bias": "Only one side is filled in. Consider the other side to avoid bias.",
   "pc.pros": "Pros",
   "pc.cons": "Cons",
   "pc.argPh": "Argument…",
@@ -109,7 +109,7 @@ export const en: Record<string, string> = {
   "pc.evaluate": "See the verdict",
   "pc.verdictAria": "Verdict",
   "pc.scores": "Pros {pour} · Cons {contre} · gap {ecart}%",
-  "pc.disclaimer": "This reflects the arguments you entered — guidance, not truth.",
+  "pc.disclaimer": "This reflects the arguments you entered, guidance, not truth.",
   "pc.error": "Evaluation failed.",
 
   "history.title": "History",

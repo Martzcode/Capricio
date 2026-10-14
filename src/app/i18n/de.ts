@@ -11,7 +11,7 @@ export const de: Record<string, string> = {
   "titlebar.themeDark": "Dunkles Design (Klick: automatisch)",
   "titlebar.themeAuto": "Automatisches Systemdesign (Klick: hell)",
   "titlebar.about": "Über Capricio",
-  "titlebar.aboutP1": "Entscheidungshilfe-App — 100 % offline, lokale Daten.",
+  "titlebar.aboutP1": "Entscheidungshilfe-App: 100 % offline, lokale Daten.",
   "titlebar.aboutP2": "Schnelle oder überlegte Entscheidungen, ohne Konto und Netzwerk (CDC §1).",
   "titlebar.minimize": "Fenster minimieren",
   "titlebar.minimizeTitle": "Minimieren",
@@ -24,7 +24,7 @@ export const de: Record<string, string> = {
   "titlebar.lang": "Sprache wechseln (aktuell: {lang})",
 
   "home.tutoLead": "Willkommen bei Capricio.",
-  "home.tutoRest": "Schnell entscheiden (Ziehung) oder überlegt (Pro/Contra) — 100 % offline.",
+  "home.tutoRest": "Schnell entscheiden (Ziehung) oder überlegt (Pro/Contra). 100 % offline.",
   "home.tutoOk": "Verstanden, nicht mehr anzeigen",
   "home.fast": "Schnelle Entscheidung",
   "home.slow": "Überlegte Entscheidung",
@@ -35,7 +35,7 @@ export const de: Record<string, string> = {
   "home.clearMsg": "Alle gespeicherten Entscheidungen werden endgültig gelöscht.",
   "home.clearOk": "Alles löschen",
 
-  "recent.empty": "Noch keine Entscheidungen — starten Sie Ihre erste Ziehung.",
+  "recent.empty": "Noch keine Entscheidungen. Starten Sie Ihre erste Ziehung.",
 
   "tools.coin": "Kopf oder Zahl",
   "tools.number": "Zufallszahl",
@@ -68,7 +68,7 @@ export const de: Record<string, string> = {
   "number.tail": "Letzte 5 Ziehungen",
   "number.notInteger": "„{value}“ ist keine ganze Zahl.",
   "number.requiredInt": "Bitte geben Sie eine ganze Zahl ein.",
-  "number.reset": "Alle Werte wurden gezogen — Ziehung zurückgesetzt.",
+  "number.reset": "Alle Werte wurden gezogen. Ziehung zurückgesetzt.",
   "number.error": "Ziehung nicht möglich.",
 
   "draw.title": "Auslosung",
@@ -94,7 +94,7 @@ export const de: Record<string, string> = {
   "pc.title": "Pro / Contra",
   "pc.titleLabel": "Titel der Entscheidung",
   "pc.titlePh": "Angebot von Acme annehmen",
-  "pc.bias": "Nur eine Seite ist ausgefüllt — denken Sie auch an die andere Seite.",
+  "pc.bias": "Nur eine Seite ist ausgefüllt. Denken Sie auch an die andere Seite.",
   "pc.pros": "Pro",
   "pc.cons": "Contra",
   "pc.argPh": "Argument…",
@@ -109,7 +109,7 @@ export const de: Record<string, string> = {
   "pc.evaluate": "Fazit ansehen",
   "pc.verdictAria": "Fazit",
   "pc.scores": "Pro {pour} · Contra {contre} · Differenz {ecart} %",
-  "pc.disclaimer": "Dies spiegelt Ihre eingegebenen Argumente wider — eine Hilfe, keine Wahrheit.",
+  "pc.disclaimer": "Dies spiegelt Ihre eingegebenen Argumente wider, eine Hilfe, keine Wahrheit.",
   "pc.error": "Auswertung nicht möglich.",
 
   "history.title": "Verlauf",

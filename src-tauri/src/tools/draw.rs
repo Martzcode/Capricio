@@ -56,10 +56,10 @@ pub fn draw(
         let max = clean.len() - 1;
         let n = clean.len();
         return Err(match lang.unwrap_or("fr") {
-            "en" => format!("At most {max} to draw for {n} options — leave at least 1."),
-            "es" => format!("Como máximo {max} para sortear con {n} opciones — deje al menos 1."),
-            "de" => format!("Höchstens {max} bei {n} Optionen ziehen — lassen Sie mindestens 1 übrig."),
-            _ => format!("Au plus {max} à tirer pour {n} options — laissez-en au moins 1."),
+            "en" => format!("At most {max} to draw for {n} options. Leave at least 1."),
+            "es" => format!("Como máximo {max} para sortear con {n} opciones. Deje al menos 1."),
+            "de" => format!("Höchstens {max} bei {n} Optionen ziehen. Lassen Sie mindestens 1 übrig."),
+            _ => format!("Au plus {max} à tirer pour {n} options. Laissez-en au moins 1."),
         });
     }
     if count > clean.len() {

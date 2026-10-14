@@ -11,7 +11,7 @@ export const fr: Record<string, string> = {
   "titlebar.themeDark": "Thème sombre (cliquer : automatique)",
   "titlebar.themeAuto": "Thème automatique système (cliquer : clair)",
   "titlebar.about": "À propos de Capricio",
-  "titlebar.aboutP1": "Application d'aide à la décision — 100 % hors-ligne, données locales.",
+  "titlebar.aboutP1": "Application d'aide à la décision : 100 % hors-ligne, données locales.",
   "titlebar.aboutP2": "Décision rapide ou réfléchie, sans compte ni réseau (CDC §1).",
   "titlebar.minimize": "Réduire la fenêtre",
   "titlebar.minimizeTitle": "Réduire",
@@ -24,7 +24,7 @@ export const fr: Record<string, string> = {
   "titlebar.lang": "Changer de langue (actuelle : {lang})",
 
   "home.tutoLead": "Bienvenue sur Capricio.",
-  "home.tutoRest": "Tranchez vite (tirage) ou posément (pour/contre) — 100 % hors-ligne.",
+  "home.tutoRest": "Tranchez vite (tirage) ou posément (pour/contre). 100 % hors-ligne.",
   "home.tutoOk": "Compris, ne plus afficher",
   "home.fast": "Décision rapide",
   "home.slow": "Décision réfléchie",
@@ -35,7 +35,7 @@ export const fr: Record<string, string> = {
   "home.clearMsg": "Toutes les décisions enregistrées seront définitivement effacées.",
   "home.clearOk": "Tout supprimer",
 
-  "recent.empty": "Aucune décision pour l'instant — lancez votre premier tirage.",
+  "recent.empty": "Aucune décision pour l'instant. Lancez votre premier tirage.",
 
   "tools.coin": "Pile ou face",
   "tools.number": "Nombre aléatoire",
@@ -68,7 +68,7 @@ export const fr: Record<string, string> = {
   "number.tail": "5 derniers tirages",
   "number.notInteger": "« {value} » n'est pas un nombre entier.",
   "number.requiredInt": "Veuillez saisir un nombre entier.",
-  "number.reset": "Toutes les valeurs ont été tirées — tirage réinitialisé.",
+  "number.reset": "Toutes les valeurs ont été tirées. Tirage réinitialisé.",
   "number.error": "Tirage impossible.",
 
   "draw.title": "Tirage au sort",
@@ -94,7 +94,7 @@ export const fr: Record<string, string> = {
   "pc.title": "Pour / Contre",
   "pc.titleLabel": "Titre de la décision",
   "pc.titlePh": "Accepter l'offre chez Acme",
-  "pc.bias": "Un seul camp est rempli — pensez aussi à l'autre côté pour éviter un biais.",
+  "pc.bias": "Un seul camp est rempli. Pensez aussi à l'autre côté pour éviter un biais.",
   "pc.pros": "Pour",
   "pc.cons": "Contre",
   "pc.argPh": "Argument…",
@@ -109,7 +109,7 @@ export const fr: Record<string, string> = {
   "pc.evaluate": "Voir le verdict",
   "pc.verdictAria": "Verdict",
   "pc.scores": "Pour {pour} · Contre {contre} · écart {ecart} %",
-  "pc.disclaimer": "Ceci reflète les arguments que vous avez saisis — une aide, pas une vérité.",
+  "pc.disclaimer": "Ceci reflète les arguments que vous avez saisis, une aide, pas une vérité.",
   "pc.error": "Évaluation impossible.",
 
   "history.title": "Historique",

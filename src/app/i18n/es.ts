@@ -11,7 +11,7 @@ export const es: Record<string, string> = {
   "titlebar.themeDark": "Tema oscuro (clic: automático)",
   "titlebar.themeAuto": "Tema automático del sistema (clic: claro)",
   "titlebar.about": "Acerca de Capricio",
-  "titlebar.aboutP1": "Aplicación de ayuda a la decisión — 100 % sin conexión, datos locales.",
+  "titlebar.aboutP1": "Aplicación de ayuda a la decisión: 100 % sin conexión, datos locales.",
   "titlebar.aboutP2": "Decisiones rápidas o reflexivas, sin cuenta ni red (CDC §1).",
   "titlebar.minimize": "Minimizar la ventana",
   "titlebar.minimizeTitle": "Minimizar",
@@ -24,7 +24,7 @@ export const es: Record<string, string> = {
   "titlebar.lang": "Cambiar idioma (actual: {lang})",
 
   "home.tutoLead": "Bienvenido a Capricio.",
-  "home.tutoRest": "Decida rápido (sorteo) o con calma (pros y contras) — 100 % sin conexión.",
+  "home.tutoRest": "Decida rápido (sorteo) o con calma (pros y contras). 100 % sin conexión.",
   "home.tutoOk": "Entendido, no mostrar más",
   "home.fast": "Decisión rápida",
   "home.slow": "Decisión reflexiva",
@@ -35,7 +35,7 @@ export const es: Record<string, string> = {
   "home.clearMsg": "Todas las decisiones guardadas se borrarán definitivamente.",
   "home.clearOk": "Borrar todo",
 
-  "recent.empty": "Aún no hay decisiones — haga su primer sorteo.",
+  "recent.empty": "Aún no hay decisiones. Haga su primer sorteo.",
 
   "tools.coin": "Cara o cruz",
   "tools.number": "Número aleatorio",
@@ -68,7 +68,7 @@ export const es: Record<string, string> = {
   "number.tail": "Últimos 5 sorteos",
   "number.notInteger": "«{value}» no es un número entero.",
   "number.requiredInt": "Introduzca un número entero.",
-  "number.reset": "Todos los valores han salido — sorteo reiniciado.",
+  "number.reset": "Todos los valores han salido. Sorteo reiniciado.",
   "number.error": "Sorteo imposible.",
 
   "draw.title": "Sorteo",
@@ -94,7 +94,7 @@ export const es: Record<string, string> = {
   "pc.title": "Pros y contras",
   "pc.titleLabel": "Título de la decisión",
   "pc.titlePh": "Aceptar la oferta de Acme",
-  "pc.bias": "Solo un lado está completo — considere el otro para evitar sesgos.",
+  "pc.bias": "Solo un lado está completo. Considere el otro para evitar sesgos.",
   "pc.pros": "Pros",
   "pc.cons": "Contras",
   "pc.argPh": "Argumento…",
@@ -109,7 +109,7 @@ export const es: Record<string, string> = {
   "pc.evaluate": "Ver el veredicto",
   "pc.verdictAria": "Veredicto",
   "pc.scores": "Pros {pour} · Contras {contre} · diferencia {ecart} %",
-  "pc.disclaimer": "Esto refleja los argumentos introducidos — una ayuda, no una verdad.",
+  "pc.disclaimer": "Esto refleja los argumentos introducidos, una ayuda, no una verdad.",
   "pc.error": "Evaluación imposible.",
 
   "history.title": "Historial",
