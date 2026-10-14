@@ -1,5 +1,8 @@
 # Release Capricio — continue sur `main` (chaque commit direct ou PR mergée
 # déclenche une release), version YYYY.MM.xx (xx repart de 01 à chaque mois).
+# Note semver : Tauri/Cargo exigent du semver strict (pas de zéros initiaux) ;
+# les fichiers techniques reçoivent donc la forme normalisée (2026.10.2) tandis
+# que tag, release et À propos gardent l'affichage demandé (2026.10.02).
 # Changelog : manuel (CHANGELOG.md, écrit par l'équipe à chaque release).
 #
 # Anti-boucle : le commit de version porte `[skip ci]`, et les runs sont
@@ -54,6 +57,9 @@ jobs:
             NEXT=$(printf "%02d" $((10#$N + 1)))
           fi
           export VERSION="$PREFIX.$NEXT"
+          # Semver strict (Tauri/Cargo) : pas de zéros initiaux → 2026.10.02 devient 2026.10.2
+          # dans les fichiers techniques. L'affichage (tag, release, À propos) garde le 02.
+          export SEMVER="$(echo "$VERSION" | awk -F. '{print $1+0 "." $2+0 "." $3+0}')"
           TAG="v$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
@@ -62,18 +68,19 @@ jobs:
           node -e "
             const fs = require('fs');
             const version = process.env.VERSION;
+            const semver = process.env.SEMVER;
             const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-            pkg.version = version;
+            pkg.version = semver;
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
             const conf = JSON.parse(fs.readFileSync('src-tauri/tauri.conf.json', 'utf8'));
-            conf.version = version;
+            conf.version = semver;
             fs.writeFileSync('src-tauri/tauri.conf.json', JSON.stringify(conf, null, 2) + '\n');
             fs.writeFileSync('src/app/version.ts', '/** Version affichée (À propos). Écrite par la CI release — ne pas modifier à la main. */\nexport const APP_VERSION = ' + JSON.stringify(version) + ';\n');
           "
 
           python3 - <<'EOF'
           import os, re
-          version = os.environ["VERSION"]
+          version = os.environ["SEMVER"]
           p = "src-tauri/Cargo.toml"
           s = open(p).read()
           s, n = re.subn(r'^version = "[^"]+"', f'version = "{version}"', s, count=1, flags=re.M)
