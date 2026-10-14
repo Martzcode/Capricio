@@ -21,6 +21,15 @@
   padding: 0 10px;
 }
 
+.app-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
 .app-name {
   font-weight: 700;
   font-size: 0.95rem;
@@ -208,6 +217,15 @@
   margin: 0 0 10px;
   font-size: 1.2rem;
   letter-spacing: 0.01em;
+}
+
+.about-logo {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  object-fit: contain;
+  margin-bottom: 12px;
 }
 
 .about p {

@@ -5,6 +5,7 @@
     data-tauri-drag-region
     (mousedown)="onDragMouseDown($event)"
   >
+    <img class="app-logo" src="assets/logo.png" alt="Capricio" draggable="false" />
     <span class="app-name">Capricio</span>
   </div>
 
@@ -84,6 +85,7 @@
 @if (showAbout()) {
   <div class="about-backdrop" (click)="closeAbout()">
     <section class="about" role="dialog" aria-modal="true" aria-labelledby="about-title" (click)="$event.stopPropagation()">
+      <img class="about-logo" src="assets/logo.png" alt="Capricio" draggable="false" />
       <h2 id="about-title">Capricio {{ appVersion }}</h2>
       <p>{{ i18n.t("titlebar.aboutP1") }}</p>
       <p class="muted">{{ i18n.t("titlebar.aboutP2") }}</p>
