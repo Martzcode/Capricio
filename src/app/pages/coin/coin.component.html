@@ -29,14 +29,28 @@
     </label>
   </form>
 
+  <p class="faces-legend">{{ i18n.t("coin.faces") }}</p>
+
   <div class="stage" aria-live="polite" aria-atomic="true">
+    <div
+      class="piece"
+      [class.spinning]="flipping()"
+      [class.landed]="result() && !flipping()"
+    >
+      <div class="flip" aria-hidden="true" [class.show-back]="showBack()">
+        <div class="face front">
+          <img src="assets/logo.png" alt="" draggable="false" />
+        </div>
+        <div class="face back">
+          <span class="coin-name">Capricio</span>
+        </div>
+      </div>
+    </div>
     @if (flipping()) {
-      <div class="piece spinning" [attr.aria-label]="i18n.t('coin.spinning')">?</div>
+      <p class="hint">{{ i18n.t("coin.spinning") }}</p>
     } @else if (result()) {
-      <div class="piece landed">{{ result()?.winner?.charAt(0) }}</div>
       <p class="winner">{{ result()?.winner }}</p>
     } @else {
-      <div class="piece idle" aria-hidden="true">◐</div>
       <p class="hint">{{ i18n.t("coin.hint") }}</p>
     }
   </div>

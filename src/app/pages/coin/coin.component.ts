@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject, signal } from "@angular/core";
+import { Component, OnDestroy, computed, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CoinService, CoinResult } from "../../services/coin.service";
 import { HistoryService } from "../../services/history.service";
@@ -28,6 +28,9 @@ export class CoinComponent implements OnDestroy {
   readonly labelB = signal(this.i18n.t("coin.defaultB"));
   readonly result = signal<CoinResult | null>(null);
   readonly flipping = signal(false);
+  /** Côté gagnant : 0 = Pile (logo), 1 = Face (nom). Détermine la face visible. */
+  readonly wonSide = signal<0 | 1 | null>(null);
+  readonly showBack = computed(() => this.wonSide() === 1);
 
   setLabel(which: 0 | 1, value: string): void {
     if (which === 0) this.labelA.set(value);
@@ -37,12 +40,14 @@ export class CoinComponent implements OnDestroy {
   async flip(): Promise<void> {
     if (this.flipping()) return;
     this.flipping.set(true);
+    this.wonSide.set(null);
     try {
       const res = await this.coin.flip([this.labelA(), this.labelB()]);
       // Suspens = durée de l'animation ; nul si animations désactivées.
       const wait = this.animationsOff() ? 0 : FLIP_MS;
       this.timer = setTimeout(() => {
         this.result.set(res);
+        this.wonSide.set(res.index === 1 ? 1 : 0);
         this.flipping.set(false);
         this.history
           .add({

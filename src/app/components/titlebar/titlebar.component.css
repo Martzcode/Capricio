@@ -31,13 +31,18 @@
 }
 
 .app-name {
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  color: var(--accent);
+  font-family: "Marcellus", "Segoe UI", Georgia, serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: #000;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+:host-context([data-theme="dark"]) .app-name {
+  color: var(--accent);
 }
 
 .titlebar-actions {
@@ -217,6 +222,69 @@
   margin: 0 0 10px;
   font-size: 1.2rem;
   letter-spacing: 0.01em;
+}
+
+.about .version {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.about .link-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 12px 0 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.about .link-row:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.about .link-row svg {
+  flex: 0 0 auto;
+}
+
+.about .link-row .ext {
+  margin-left: auto;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.about .link-row:hover .ext {
+  color: var(--accent);
+}
+
+.about .credit {
+  margin: 10px 0 16px;
+  font-size: 0.85rem;
+}
+
+.about .link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.about .link:hover {
+  filter: brightness(1.15);
 }
 
 .about-logo {

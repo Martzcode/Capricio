@@ -12,7 +12,8 @@ export const fr: Record<string, string> = {
   "titlebar.themeAuto": "Thème automatique système (cliquer : clair)",
   "titlebar.about": "À propos de Capricio",
   "titlebar.aboutP1": "Application d'aide à la décision : 100 % hors-ligne, données locales.",
-  "titlebar.aboutP2": "Décision rapide ou réfléchie, sans compte ni réseau (CDC §1).",
+  "titlebar.repo": "Code source sur GitHub",
+  "titlebar.devBy": "Développé par",
   "titlebar.minimize": "Réduire la fenêtre",
   "titlebar.minimizeTitle": "Réduire",
   "titlebar.maximize": "Agrandir la fenêtre",
@@ -54,6 +55,7 @@ export const fr: Record<string, string> = {
   "coin.replay": "Rejouer",
   "coin.hint": "Cliquez sur Lancer",
   "coin.spinning": "Pièce en rotation",
+  "coin.faces": "Côté 1 = logo · Côté 2 = nom",
   "coin.error": "Tirage impossible.",
 
   "number.title": "Nombre aléatoire",

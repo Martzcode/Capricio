@@ -1,0 +1,152 @@
+# Release Capricio — continue sur `main` (chaque commit direct ou PR mergée
+# déclenche une release), version YYYY.MM.xx (xx repart de 01 à chaque mois).
+# Changelog : manuel (CHANGELOG.md, écrit par l'équipe à chaque release).
+#
+# Anti-boucle : le commit de version porte `[skip ci]`, et les runs sont
+# sérialisés (`concurrency`) pour ne jamais calculer 2 fois le même numéro.
+#
+# Artefacts (CDC §12) :
+# - macOS ARM + Intel : .dmg
+# - Windows : .exe (NSIS), .msi, .msix (Microsoft Store — soumission et
+#   signature Store à part)
+# - Linux Debian/Fedora : .deb, .rpm
+# - Arch/Manjaro : .AppImage (portable, cf. CDC §12)
+#
+# La version est écrite dans package.json, tauri.conf.json, Cargo.toml,
+# Cargo.lock et src/app/version.ts (affichée dans À propos), le changelog est
+# pré-rempli depuis les commits, puis le tout est tagué vX.
+
+name: release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
+      tag: ${{ steps.bump.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: bump
+        name: Versionner, changelogger, tamponner, taguer
+        run: |
+          set -euo pipefail
+          PREFIX=$(date -u +%Y.%m)
+          LAST=$(git tag --list "v$PREFIX.*" | sort -V | tail -n 1 || true)
+          if [ -z "$LAST" ]; then
+            NEXT="01"
+          else
+            N="${LAST##*.}"
+            NEXT=$(printf "%02d" $((10#$N + 1)))
+          fi
+          export VERSION="$PREFIX.$NEXT"
+          TAG="v$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Release $TAG"
+
+          node -e "
+            const fs = require('fs');
+            const version = process.env.VERSION;
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.version = version;
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+            const conf = JSON.parse(fs.readFileSync('src-tauri/tauri.conf.json', 'utf8'));
+            conf.version = version;
+            fs.writeFileSync('src-tauri/tauri.conf.json', JSON.stringify(conf, null, 2) + '\n');
+            fs.writeFileSync('src/app/version.ts', '/** Version affichée (À propos). Écrite par la CI release — ne pas modifier à la main. */\nexport const APP_VERSION = ' + JSON.stringify(version) + ';\n');
+          "
+
+          python3 - <<'EOF'
+          import os, re
+          version = os.environ["VERSION"]
+          p = "src-tauri/Cargo.toml"
+          s = open(p).read()
+          s, n = re.subn(r'^version = "[^"]+"', f'version = "{version}"', s, count=1, flags=re.M)
+          assert n == 1, "version introuvable dans Cargo.toml"
+          open(p, "w").write(s)
+          p = "src-tauri/Cargo.lock"
+          s = open(p).read()
+          s, n = re.subn(r'(name = "capricio"\nversion = ")[^"]+(")', rf"\g<1>{version}\g<2>", s, count=1)
+          assert n == 1, "entrée capricio introuvable dans Cargo.lock"
+          open(p, "w").write(s)
+          EOF
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json src-tauri/tauri.conf.json src-tauri/Cargo.toml src-tauri/Cargo.lock src/app/version.ts
+          git commit -m "release $TAG [skip ci]"
+          git tag "$TAG"
+          git push origin HEAD
+          git push origin "$TAG"
+
+  build:
+    needs: version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            bundles: dmg
+          - platform: macos-15-intel
+            bundles: dmg
+          - platform: windows-latest
+            bundles: nsis,msi,msix
+          - platform: ubuntu-22.04
+            bundles: deb,rpm,appimage
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
+
+      - name: install frontend dependencies
+        run: npm ci
+
+      - uses: tauri-apps/tauri-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ needs.version.outputs.tag }}
+          releaseName: "Capricio ${{ needs.version.outputs.version }}"
+          releaseBody: |-
+            Capricio ${{ needs.version.outputs.version }} — application d'aide à la décision (100 % hors-ligne).
+
+            Détails dans CHANGELOG.md.
+
+            - macOS (Apple Silicon / Intel) : `.dmg`
+            - Windows : `.exe` (NSIS), `.msi` — `.msix` réservé à la soumission Microsoft Store (non signé ici)
+            - Debian/Ubuntu : `.deb` — Fedora : `.rpm`
+            - Arch/Manjaro : `.AppImage` (rendre exécutable : `chmod +x`)
+          releaseDraft: false
+          prerelease: false
+          args: --bundles ${{ matrix.bundles }}

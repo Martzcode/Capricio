@@ -1,6 +1,8 @@
 import { Component, ElementRef, HostListener, OnInit, inject, signal } from "@angular/core";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { I18nService, LANGS, LANG_NAMES, Lang } from "../../services/i18n.service";
 import { ThemeService, ThemeChoice } from "../../services/theme.service";
+import { APP_VERSION } from "../../version";
 import { WindowControlsService } from "../../services/window-controls.service";
 
 const THEME_ORDER: ThemeChoice[] = ["light", "dark", "auto"];
@@ -22,7 +24,9 @@ export class TitlebarComponent implements OnInit {
   private readonly host = inject(ElementRef<HTMLElement>);
   readonly showAbout = signal(false);
   readonly showLangMenu = signal(false);
-  readonly appVersion = "0.1.0";
+  readonly appVersion = APP_VERSION;
+  readonly repoUrl = "https://github.com/Martzcode/Capricio";
+  readonly authorUrl = "https://github.com/Martzcode";
 
   readonly langs: Array<{ code: Lang; label: string }> = LANGS.map((code) => ({
     code,
@@ -70,6 +74,16 @@ export class TitlebarComponent implements OnInit {
   openAbout(): void {
     this.showAbout.set(true);
     this.showLangMenu.set(false);
+  }
+
+  /** Ouvre un lien externe : navigateur système sous Tauri, nouvel onglet sur le web. */
+  openExternal(url: string): void {
+    if (this.win.isTauri) {
+      // `openUrl` → application par défaut du système (permission `opener:default`).
+      openUrl(url).catch((e: unknown) => console.error("[titlebar] openUrl refusé", e));
+    } else {
+      window.open(url, "_blank", "noopener");
+    }
   }
 
   closeAbout(): void {

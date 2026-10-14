@@ -12,7 +12,8 @@ export const en: Record<string, string> = {
   "titlebar.themeAuto": "Automatic system theme (click: light)",
   "titlebar.about": "About Capricio",
   "titlebar.aboutP1": "Decision helper app: 100% offline, local data.",
-  "titlebar.aboutP2": "Quick or thoughtful decisions, no account, no network (see SRS §1).",
+  "titlebar.repo": "Source code on GitHub",
+  "titlebar.devBy": "Developed by",
   "titlebar.minimize": "Minimize window",
   "titlebar.minimizeTitle": "Minimize",
   "titlebar.maximize": "Maximize window",
@@ -54,6 +55,7 @@ export const en: Record<string, string> = {
   "coin.replay": "Flip again",
   "coin.hint": "Click Flip",
   "coin.spinning": "Coin spinning",
+  "coin.faces": "Side 1 = logo · Side 2 = name",
   "coin.error": "Draw failed.",
 
   "number.title": "Random number",

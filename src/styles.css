@@ -50,6 +50,16 @@
   color-scheme: dark;
 }
 
+/* Police du wordmark (OFL, embarquée pour usage hors-ligne).
+   Marcellus © 2012 Brian J. Bonislawsky DBA Astigmatic — voir assets/fonts/OFL-Marcellus.txt. */
+@font-face {
+  font-family: "Marcellus";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/marcellus-latin.woff2") format("woff2");
+}
+
 * {
   box-sizing: border-box;
 }
