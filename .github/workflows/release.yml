@@ -1,23 +1,17 @@
 # Release Capricio — continue sur `main` (chaque commit direct ou PR mergée
 # déclenche une release), version YYYY.MM.xx (xx repart de 01 à chaque mois).
-# Note semver : Tauri/Cargo exigent du semver strict (pas de zéros initiaux) ;
-# les fichiers techniques reçoivent donc la forme normalisée (2026.10.2) tandis
-# que tag, release et À propos gardent l'affichage demandé (2026.10.02).
 # Changelog : manuel (CHANGELOG.md, écrit par l'équipe à chaque release).
 #
-# Anti-boucle : le commit de version porte `[skip ci]`, et les runs sont
-# sérialisés (`concurrency`) pour ne jamais calculer 2 fois le même numéro.
+#Tolérance aux échecs : la version n'est commitée/taguée/publiée que si TOUS
+# les builds réussissent — un run rouge ne consomme aucun numéro.
+# Anti-boucle : le commit de version porte `[skip ci]`, runs sérialisés.
 #
-# Artefacts (CDC §12) :
-# - macOS ARM + Intel : .dmg
-# - Windows : .exe (NSIS), .msi, .msix (Microsoft Store — soumission et
-#   signature Store à part)
-# - Linux Debian/Fedora : .deb, .rpm
-# - Arch/Manjaro : .AppImage (portable, cf. CDC §12)
+# Note semver : Tauri/Cargo exigent du semver strict (pas de zéros initiaux) ;
+# les fichiers techniques reçoivent la forme normalisée (2026.10.2) tandis que
+# tag, release et À propos gardent l'affichage demandé (2026.10.02).
 #
-# La version est écrite dans package.json, tauri.conf.json, Cargo.toml,
-# Cargo.lock et src/app/version.ts (affichée dans À propos), le changelog est
-# pré-rempli depuis les commits, puis le tout est tagué vX.
+# Artefacts (CDC §12) : .dmg ×2 (ARM+Intel), .exe (NSIS), .msi, .msix (Store,
+# soumission à part), .deb, .rpm, .AppImage (Arch/Manjaro, portable).
 
 name: release
 
@@ -37,15 +31,16 @@ jobs:
   version:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.bump.outputs.version }}
-      tag: ${{ steps.bump.outputs.tag }}
+      version: ${{ steps.calc.outputs.version }}
+      semver: ${{ steps.calc.outputs.semver }}
+      tag: ${{ steps.calc.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - id: bump
-        name: Versionner, changelogger, tamponner, taguer
+      - id: calc
+        name: Calculer le prochain YYYY.MM.xx (sans rien écrire)
         run: |
           set -euo pipefail
           PREFIX=$(date -u +%Y.%m)
@@ -56,50 +51,12 @@ jobs:
             N="${LAST##*.}"
             NEXT=$(printf "%02d" $((10#$N + 1)))
           fi
-          export VERSION="$PREFIX.$NEXT"
-          # Semver strict (Tauri/Cargo) : pas de zéros initiaux → 2026.10.02 devient 2026.10.2
-          # dans les fichiers techniques. L'affichage (tag, release, À propos) garde le 02.
-          export SEMVER="$(echo "$VERSION" | awk -F. '{print $1+0 "." $2+0 "." $3+0}')"
-          TAG="v$VERSION"
+          VERSION="$PREFIX.$NEXT"
+          SEMVER="$(echo "$VERSION" | awk -F. '{print $1+0 "." $2+0 "." $3+0}')"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "Release $TAG"
-
-          node -e "
-            const fs = require('fs');
-            const version = process.env.VERSION;
-            const semver = process.env.SEMVER;
-            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-            pkg.version = semver;
-            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
-            const conf = JSON.parse(fs.readFileSync('src-tauri/tauri.conf.json', 'utf8'));
-            conf.version = semver;
-            fs.writeFileSync('src-tauri/tauri.conf.json', JSON.stringify(conf, null, 2) + '\n');
-            fs.writeFileSync('src/app/version.ts', '/** Version affichée (À propos). Écrite par la CI release — ne pas modifier à la main. */\nexport const APP_VERSION = ' + JSON.stringify(version) + ';\n');
-          "
-
-          python3 - <<'EOF'
-          import os, re
-          version = os.environ["SEMVER"]
-          p = "src-tauri/Cargo.toml"
-          s = open(p).read()
-          s, n = re.subn(r'^version = "[^"]+"', f'version = "{version}"', s, count=1, flags=re.M)
-          assert n == 1, "version introuvable dans Cargo.toml"
-          open(p, "w").write(s)
-          p = "src-tauri/Cargo.lock"
-          s = open(p).read()
-          s, n = re.subn(r'(name = "capricio"\nversion = ")[^"]+(")', rf"\g<1>{version}\g<2>", s, count=1)
-          assert n == 1, "entrée capricio introuvable dans Cargo.lock"
-          open(p, "w").write(s)
-          EOF
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json src-tauri/tauri.conf.json src-tauri/Cargo.toml src-tauri/Cargo.lock src/app/version.ts
-          git commit -m "release $TAG [skip ci]"
-          git tag "$TAG"
-          git push origin HEAD
-          git push origin "$TAG"
+          echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Release candidate v$VERSION (semver $SEMVER)"
 
   build:
     needs: version
@@ -118,8 +75,9 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.version.outputs.tag }}
+
+      - name: Tamponner la version (local, non committé)
+        run: bash .github/scripts/stamp-version.sh "${{ needs.version.outputs.version }}" "${{ needs.version.outputs.semver }}"
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -140,20 +98,52 @@ jobs:
         run: npm ci
 
       - uses: tauri-apps/tauri-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ needs.version.outputs.tag }}
-          releaseName: "Capricio ${{ needs.version.outputs.version }}"
-          releaseBody: |-
-            Capricio ${{ needs.version.outputs.version }} — application d'aide à la décision (100 % hors-ligne).
-
-            Détails dans CHANGELOG.md.
-
-            - macOS (Apple Silicon / Intel) : `.dmg`
-            - Windows : `.exe` (NSIS), `.msi` — `.msix` réservé à la soumission Microsoft Store (non signé ici)
-            - Debian/Ubuntu : `.deb` — Fedora : `.rpm`
-            - Arch/Manjaro : `.AppImage` (rendre exécutable : `chmod +x`)
-          releaseDraft: false
-          prerelease: false
+          uploadWorkflowArtifacts: true
+          uploadUpdaterJson: false
           args: --bundles ${{ matrix.bundles }}
+
+  publish:
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Tamponner, committer, taguer
+        run: |
+          set -euo pipefail
+          bash .github/scripts/stamp-version.sh "${{ needs.version.outputs.version }}" "${{ needs.version.outputs.semver }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json src-tauri/tauri.conf.json src-tauri/Cargo.toml src-tauri/Cargo.lock src/app/version.ts
+          git commit -m "release ${{ needs.version.outputs.tag }} [skip ci]"
+          git tag "${{ needs.version.outputs.tag }}"
+          git push origin HEAD:main
+          git push origin "${{ needs.version.outputs.tag }}"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: "*"
+          path: dist-bundles
+          merge-multiple: true
+
+      - name: Créer la GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mapfile -t FILES < <(find dist-bundles -type f | sort)
+          BODY="Capricio ${{ needs.version.outputs.version }} — application d'aide à la décision (100 % hors-ligne).
+
+          Détails dans CHANGELOG.md.
+
+          - macOS (Apple Silicon / Intel) : .dmg
+          - Windows : .exe (NSIS), .msi — .msix réservé à la soumission Microsoft Store (non signé ici)
+          - Debian/Ubuntu : .deb — Fedora : .rpm
+          - Arch/Manjaro : .AppImage (rendre exécutable : chmod +x)"
+          gh release create "${{ needs.version.outputs.tag }}" \
+            --title "Capricio ${{ needs.version.outputs.version }}" \
+            --notes "$BODY" \
+            "${FILES[@]}"
