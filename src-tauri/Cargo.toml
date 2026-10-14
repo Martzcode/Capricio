@@ -1,6 +1,6 @@
 [package]
 name = "capricio"
-version = "2026.10.01"
+version = "2026.10.02"
 description = "Capricio - Application d'aide à la décision"
 authors = ["you"]
 edition = "2024"
