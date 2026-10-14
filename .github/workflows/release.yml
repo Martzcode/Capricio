@@ -10,8 +10,10 @@
 # les fichiers techniques reçoivent la forme normalisée (2026.10.2) tandis que
 # tag, release et À propos gardent l'affichage demandé (2026.10.02).
 #
-# Artefacts (CDC §12) : .dmg ×2 (ARM+Intel), .exe (NSIS), .msi, .msix (Store,
-# soumission à part), .deb, .rpm, .AppImage (Arch/Manjaro, portable).
+# Artefacts (CDC §12) : .dmg ×2 (ARM+Intel), .exe (NSIS), .msi, .deb, .rpm,
+# .AppImage (Arch/Manjaro, portable). Pas de .msix : le CLI Tauri ne le propose
+# pas (`--bundles` Windows = msi, nsis) — la soumission Microsoft Store se fera
+# par reconditionnement manuel du .msi/.exe (MSIX Packaging Tool).
 
 name: release
 
@@ -69,7 +71,7 @@ jobs:
           - platform: macos-15-intel
             bundles: dmg
           - platform: windows-latest
-            bundles: nsis,msi,msix
+            bundles: nsis,msi
           - platform: ubuntu-22.04
             bundles: deb,rpm,appimage
     runs-on: ${{ matrix.platform }}
@@ -140,7 +142,7 @@ jobs:
           Détails dans CHANGELOG.md.
 
           - macOS (Apple Silicon / Intel) : .dmg
-          - Windows : .exe (NSIS), .msi — .msix réservé à la soumission Microsoft Store (non signé ici)
+          - Windows : .exe (NSIS), .msi (soumission Microsoft Store par reconditionnement manuel, hors CI)
           - Debian/Ubuntu : .deb — Fedora : .rpm
           - Arch/Manjaro : .AppImage (rendre exécutable : chmod +x)"
           gh release create "${{ needs.version.outputs.tag }}" \
