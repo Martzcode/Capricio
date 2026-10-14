@@ -18,15 +18,41 @@
     >
       {{ themeIcon() }}
     </button>
-    <button
-      type="button"
-      class="lang-btn"
-      (click)="i18n.cycle()"
-      [attr.aria-label]="i18n.t('titlebar.lang', { lang: i18n.lang() })"
-      [title]="i18n.t('titlebar.lang', { lang: i18n.lang() })"
-    >
-      {{ i18n.lang().toUpperCase() }}
-    </button>
+    <div class="lang-wrap">
+      <button
+        type="button"
+        class="lang-btn"
+        (click)="toggleLangMenu(); $event.stopPropagation()"
+        [attr.aria-expanded]="showLangMenu()"
+        aria-haspopup="listbox"
+        [attr.aria-label]="i18n.t('titlebar.lang', { lang: i18n.lang() })"
+        [title]="i18n.t('titlebar.lang', { lang: i18n.lang() })"
+      >
+        {{ i18n.lang().toUpperCase() }}
+        <span class="caret" aria-hidden="true" [class.open]="showLangMenu()">▾</span>
+      </button>
+      @if (showLangMenu()) {
+        <ul class="lang-menu" role="listbox" [attr.aria-label]="i18n.t('titlebar.lang', { lang: i18n.lang() })">
+          @for (l of langs; track l.code) {
+            <li role="none">
+              <button
+                type="button"
+                role="option"
+                [attr.aria-selected]="i18n.lang() === l.code"
+                [class.active]="i18n.lang() === l.code"
+                (click)="selectLang(l.code); $event.stopPropagation()"
+              >
+                <span class="code">{{ l.code.toUpperCase() }}</span>
+                <span class="name">{{ l.label }}</span>
+                @if (i18n.lang() === l.code) {
+                  <span class="tick" aria-hidden="true">✓</span>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
     <button
       type="button"
       class="icon-btn help"

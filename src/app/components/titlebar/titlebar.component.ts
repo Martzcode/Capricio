@@ -1,5 +1,5 @@
-import { Component, HostListener, OnInit, inject, signal } from "@angular/core";
-import { I18nService } from "../../services/i18n.service";
+import { Component, ElementRef, HostListener, OnInit, inject, signal } from "@angular/core";
+import { I18nService, LANGS, LANG_NAMES, Lang } from "../../services/i18n.service";
 import { ThemeService, ThemeChoice } from "../../services/theme.service";
 import { WindowControlsService } from "../../services/window-controls.service";
 
@@ -19,8 +19,15 @@ export class TitlebarComponent implements OnInit {
   readonly theme = inject(ThemeService);
   readonly win = inject(WindowControlsService);
   readonly i18n = inject(I18nService);
+  private readonly host = inject(ElementRef<HTMLElement>);
   readonly showAbout = signal(false);
+  readonly showLangMenu = signal(false);
   readonly appVersion = "0.1.0";
+
+  readonly langs: Array<{ code: Lang; label: string }> = LANGS.map((code) => ({
+    code,
+    label: LANG_NAMES[code],
+  }));
 
   async ngOnInit(): Promise<void> {
     await this.win.refresh();
@@ -62,14 +69,35 @@ export class TitlebarComponent implements OnInit {
 
   openAbout(): void {
     this.showAbout.set(true);
+    this.showLangMenu.set(false);
   }
 
   closeAbout(): void {
     this.showAbout.set(false);
   }
 
+  toggleLangMenu(): void {
+    this.showLangMenu.update((v) => !v);
+  }
+
+  selectLang(lang: Lang): void {
+    this.i18n.set(lang);
+    this.showLangMenu.set(false);
+  }
+
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.showLangMenu() && !this.host.nativeElement.querySelector(".lang-wrap")?.contains(event.target as Node)) {
+      this.showLangMenu.set(false);
+    }
+  }
+
   @HostListener("document:keydown.escape")
   onEscape(): void {
+    if (this.showLangMenu()) {
+      this.showLangMenu.set(false);
+      return;
+    }
     this.closeAbout();
   }
 }

@@ -6,7 +6,13 @@ import { fr } from "../i18n/fr";
 
 export type Lang = "fr" | "en" | "es" | "de";
 
-const LANGS: Lang[] = ["fr", "en", "es", "de"];
+export const LANGS: Lang[] = ["fr", "en", "es", "de"];
+export const LANG_NAMES: Record<Lang, string> = {
+  fr: "Français",
+  en: "English",
+  es: "Español",
+  de: "Deutsch",
+};
 const DICTS: Record<Lang, Record<string, string>> = { fr, en, es, de };
 const LOCALES: Record<Lang, string> = { fr: "fr-FR", en: "en-US", es: "es-ES", de: "de-DE" };
 const STORAGE_KEY = "capricio.lang";

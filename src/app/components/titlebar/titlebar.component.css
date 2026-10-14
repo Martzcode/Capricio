@@ -71,11 +71,16 @@
   color: #fff;
 }
 
-/* Sélecteur de langue : code compact (FR/EN/ES/DE), cycle au clic. */
+/* Sélecteur de langue : bouton compact + menu déroulant custom intégré au thème. */
+.lang-wrap {
+  position: relative;
+}
+
 .lang-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   height: 32px;
   min-width: 38px;
   padding: 0 8px;
@@ -90,9 +95,81 @@
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.lang-btn:hover {
+.lang-btn:hover,
+.lang-btn[aria-expanded="true"] {
   background: var(--hover);
   color: var(--titlebar-fg);
+}
+
+.lang-btn .caret {
+  font-size: 0.7rem;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.lang-btn .caret.open {
+  transform: rotate(180deg);
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 160px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+}
+
+.lang-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.lang-menu button:hover {
+  background: var(--hover);
+}
+
+.lang-menu button.active {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.lang-menu .code {
+  min-width: 26px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.lang-menu button.active .code {
+  color: var(--accent);
+}
+
+.lang-menu .name {
+  flex: 1 1 auto;
+}
+
+.lang-menu .tick {
+  font-weight: 700;
 }
 
 .window-controls {
