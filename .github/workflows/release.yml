@@ -10,11 +10,19 @@
 # les fichiers techniques reçoivent la forme normalisée (2026.10.2) tandis que
 # tag, release et À propos gardent l'affichage demandé (2026.10.02).
 #
-# Artefacts (CDC §12) : .dmg ×2 (ARM+Intel), .exe (NSIS), .deb, .rpm,
-# .AppImage (Arch/Manjaro, portable).
-# Pas de .msi : WiX limite le major à 255 (2026 refusé) — l'.exe NSIS couvre
-# Windows. Pas de .msix (absent du CLI) — soumission Store par reconditionnement
-# manuel ultérieur (MSIX Packaging Tool).
+# Artefacts :
+# - .dmg ×2 (ARM+Intel), .exe (NSIS, installation directe hors Store),
+#   .deb, .rpm, .AppImage (Arch/Manjaro, portable).
+# - .msix (Microsoft Store UNIQUEMENT, Desktop Bridge via scripts/pack-msix.ps1
+#   + MakeAppx du Windows SDK — même approche que Vivum).
+#   Non signé par défaut : Partner Center re-signe à la soumission.
+#   Signature PFX optionnelle en CI (sideload) via secrets MSIX_SIGN_*.
+# - Pas de .msi : WiX limite chaque composante à 255 (2026 refusé) et le schéma
+#   de version publié 2026.MM.xx est déjà figé — l'.exe NSIS couvre Windows en
+#   direct. Ni l'.exe ni un éventuel .msi ne vont au Store : seul le .msix y va.
+# Secrets MSIX/Store (optionnels, repli = compte Partner Center Martzcode) :
+#   MS_STORE_IDENTITY_NAME, MS_STORE_PUBLISHER, MS_STORE_PUBLISHER_DISPLAY,
+#   MSIX_SIGN_PFX_BASE64, MSIX_SIGN_PASSWORD.
 
 name: release
 
@@ -36,6 +44,7 @@ jobs:
     outputs:
       version: ${{ steps.calc.outputs.version }}
       semver: ${{ steps.calc.outputs.semver }}
+      version-msix: ${{ steps.calc.outputs.version_msix }}
       tag: ${{ steps.calc.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
@@ -56,10 +65,14 @@ jobs:
           fi
           VERSION="$PREFIX.$NEXT"
           SEMVER="$(echo "$VERSION" | awk -F. '{print $1+0 "." $2+0 "." $3+0}')"
+          # MSIX (Microsoft Store) : 4 parties numériques, chacune <= 65535.
+          # YYYY.MM.xx -> YYYY.M.xx.0 (monotone, même convention que Vivum).
+          MSIX="$(echo "$VERSION" | awk -F. '{print $1+0 "." $2+0 "." $3+0 ".0"}')"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
+          echo "version_msix=$MSIX" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Release candidate v$VERSION (semver $SEMVER)"
+          echo "Release candidate v$VERSION (semver $SEMVER, msix $MSIX)"
 
   build:
     needs: version
@@ -106,6 +119,41 @@ jobs:
           uploadUpdaterJson: false
           args: --bundles ${{ matrix.bundles }}
 
+      - name: Préparer le certificat de signature MSIX (optionnel)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          if ($env:MSIX_PFX_B64) {
+            $bytes = [Convert]::FromBase64String($env:MSIX_PFX_B64)
+            [IO.File]::WriteAllBytes("$env:RUNNER_TEMP\msix-sign.pfx", $bytes)
+            "MSIX_SIGN_PFX_PATH=$env:RUNNER_TEMP\msix-sign.pfx" >> $env:GITHUB_ENV
+          } else {
+            Write-Host "Pas de certificat : le MSIX restera non signé (Partner Center re-signe à la soumission)."
+          }
+        env:
+          MSIX_PFX_B64: ${{ secrets.MSIX_SIGN_PFX_BASE64 }}
+
+      # MSIX Desktop Bridge (Microsoft Store UNIQUEMENT) : non signé par défaut.
+      # Identité/publisher via secrets, repli = valeurs Partner Center (Martzcode).
+      # L'.exe NSIS reste l'installeur direct hors Store — il ne va PAS au Store.
+      - name: Empaqueter le MSIX (Microsoft Store uniquement)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: ./scripts/pack-msix.ps1 -DisplayName "Capricio" -PublisherDisplayName "${{ secrets.MS_STORE_PUBLISHER_DISPLAY || 'Martzcode' }}"
+        env:
+          MSIX_IDENTITY_NAME: ${{ secrets.MS_STORE_IDENTITY_NAME }}
+          MSIX_PUBLISHER: ${{ secrets.MS_STORE_PUBLISHER }}
+          MSIX_VERSION: ${{ needs.version.outputs.version-msix }}
+          MSIX_SIGN_PASSWORD: ${{ secrets.MSIX_SIGN_PASSWORD }}
+
+      - name: Téléverser le MSIX (artefact de workflow)
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-msix
+          path: src-tauri/target/release/bundle/msix/*.msix
+          if-no-files-found: error
+
   publish:
     needs: [version, build]
     runs-on: ubuntu-latest
@@ -143,7 +191,8 @@ jobs:
           Détails dans CHANGELOG.md.
 
           - macOS (Apple Silicon / Intel) : .dmg
-          - Windows : .exe (NSIS) (soumission Microsoft Store par reconditionnement manuel, hors CI)
+          - Windows (installation directe, hors Store) : .exe (NSIS)
+          - Microsoft Store (UNIQUEMENT) : .msix version ${{ needs.version.outputs.version-msix }}, non signé — à déposer dans Partner Center (le Store re-signe automatiquement). Ni l'.exe ni un .msi ne vont au Store.
           - Debian/Ubuntu : .deb — Fedora : .rpm
           - Arch/Manjaro : .AppImage (rendre exécutable : chmod +x)"
           gh release create "${{ needs.version.outputs.tag }}" \
