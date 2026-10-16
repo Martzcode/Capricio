@@ -12,7 +12,7 @@
 #
 # Artefacts :
 # - .dmg ×2 (ARM+Intel), .exe (NSIS, installation directe hors Store),
-#   .deb, .rpm, .AppImage (Arch/Manjaro, portable).
+#   .deb, .rpm.
 # - .msix (Microsoft Store UNIQUEMENT, Desktop Bridge via scripts/pack-msix.ps1
 #   + MakeAppx du Windows SDK — même approche que Vivum).
 #   Non signé par défaut : Partner Center re-signe à la soumission.
@@ -87,7 +87,7 @@ jobs:
           - platform: windows-latest
             bundles: nsis
           - platform: ubuntu-22.04
-            bundles: deb,rpm,appimage
+            bundles: deb,rpm
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
@@ -193,8 +193,7 @@ jobs:
           - macOS (Apple Silicon / Intel) : .dmg
           - Windows (installation directe, hors Store) : .exe (NSIS)
           - Microsoft Store (UNIQUEMENT) : .msix version ${{ needs.version.outputs.version-msix }}, non signé — à déposer dans Partner Center (le Store re-signe automatiquement). Ni l'.exe ni un .msi ne vont au Store.
-          - Debian/Ubuntu : .deb — Fedora : .rpm
-          - Arch/Manjaro : .AppImage (rendre exécutable : chmod +x)"
+          - Debian/Ubuntu : .deb — Fedora : .rpm"
           gh release create "${{ needs.version.outputs.tag }}" \
             --title "Capricio ${{ needs.version.outputs.version }}" \
             --notes "$BODY" \

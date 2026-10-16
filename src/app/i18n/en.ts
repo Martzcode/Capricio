@@ -55,7 +55,6 @@ export const en: Record<string, string> = {
   "coin.replay": "Flip again",
   "coin.hint": "Click Flip",
   "coin.spinning": "Coin spinning",
-  "coin.faces": "Side 1 = logo · Side 2 = name",
   "coin.error": "Draw failed.",
 
   "number.title": "Random number",

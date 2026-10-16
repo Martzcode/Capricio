@@ -38,7 +38,7 @@ npm install
 npm run start      # Angular dev server (http://localhost:1420)
 npm run tauri dev  # Full desktop app in dev
 npm run build      # Frontend production build
-npm run tauri build # Native installers (.msi/.exe, .dmg/.app, .deb, .rpm, AppImage, .msix)
+npm run tauri build # Native installers (.exe NSIS + .msix Store, .dmg/.app, .deb, .rpm)
 ```
 
 > Cold start < 1.5s, idle memory < 150MB, installer < 15MB (excl. native WebView).
@@ -58,7 +58,7 @@ Local-only storage. No cloud sync, no account, no tracking in V1. Future sync wi
 
 ## Platforms
 
-Windows (MSI/NSIS/MSIX) · macOS (DMG, Intel + Apple Silicon) · Linux (DEB, RPM, AppImage for Fedora / Debian / Manjaro-Arch)
+Windows (NSIS direct + MSIX Store) · macOS (DMG, Intel + Apple Silicon) · Linux (DEB for Debian/Ubuntu, RPM for Fedora)
 
 ## Contributing
 

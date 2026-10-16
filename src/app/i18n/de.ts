@@ -55,7 +55,6 @@ export const de: Record<string, string> = {
   "coin.replay": "Nochmal",
   "coin.hint": "Klicken Sie auf Werfen",
   "coin.spinning": "Münze rotiert",
-  "coin.faces": "Seite 1 = Logo · Seite 2 = Name",
   "coin.error": "Ziehung nicht möglich.",
 
   "number.title": "Zufallszahl",

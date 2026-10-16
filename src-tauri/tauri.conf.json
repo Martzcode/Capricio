@@ -30,6 +30,8 @@
     "active": true,
     "targets": "all",
     "publisher": "Martzcode",
+    "category": "Utility",
+    "shortDescription": "Aide à la décision rapide, 100 % hors-ligne",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
