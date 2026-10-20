@@ -65,7 +65,6 @@ export const es: Record<string, string> = {
   "number.whole": "Solo números enteros",
   "number.draw": "Sortear",
   "number.drawMore": "Sortear otro número",
-  "number.hint": "Clic en Sortear",
   "number.tail": "Últimos 5 sorteos",
   "number.notInteger": "«{value}» no es un número entero.",
   "number.requiredInt": "Introduzca un número entero.",

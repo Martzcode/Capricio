@@ -65,7 +65,6 @@ export const en: Record<string, string> = {
   "number.whole": "Integers only",
   "number.draw": "Draw",
   "number.drawMore": "Draw another number",
-  "number.hint": "Click Draw",
   "number.tail": "Last 5 draws",
   "number.notInteger": "{value} is not an integer.",
   "number.requiredInt": "Please enter an integer.",

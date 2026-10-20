@@ -65,7 +65,6 @@ export const de: Record<string, string> = {
   "number.whole": "Nur ganze Zahlen",
   "number.draw": "Ziehen",
   "number.drawMore": "Weitere Zahl ziehen",
-  "number.hint": "Klicken Sie auf Ziehen",
   "number.tail": "Letzte 5 Ziehungen",
   "number.notInteger": "„{value}“ ist keine ganze Zahl.",
   "number.requiredInt": "Bitte geben Sie eine ganze Zahl ein.",

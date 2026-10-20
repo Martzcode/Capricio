@@ -40,8 +40,6 @@
   <div class="stage" aria-live="polite" aria-atomic="true">
     @if (value() !== null) {
       <p class="big">{{ value() }}</p>
-    } @else {
-      <p class="hint">{{ i18n.t("number.hint") }}</p>
     }
   </div>
 

@@ -65,7 +65,6 @@ export const fr: Record<string, string> = {
   "number.whole": "Nombres entiers uniquement",
   "number.draw": "Tirer",
   "number.drawMore": "Tirer un autre nombre",
-  "number.hint": "Cliquez sur Tirer",
   "number.tail": "5 derniers tirages",
   "number.notInteger": "« {value} » n'est pas un nombre entier.",
   "number.requiredInt": "Veuillez saisir un nombre entier.",
