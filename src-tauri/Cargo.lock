@@ -385,7 +385,7 @@ dependencies = [
 
 [[package]]
 name = "capricio"
-version = "2026.10.3"
+version = "2026.10.4"
 dependencies = [
  "chrono",
  "gdk",
